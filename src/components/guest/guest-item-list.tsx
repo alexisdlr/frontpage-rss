@@ -12,7 +12,8 @@ import { CheckCheck, ChevronDown, Filter, Loader2 } from "lucide-react";
 
 import { useGuest } from "@/src/components/guest/guest-provider";
 import { GuestItemRow } from "@/src/components/guest/guest-item-row";
-import { FeedItemSkeleton } from "@/src/components/items/skeletons";
+import { FeedItemSkeleton, LoadMoreSkeleton } from "@/src/components/items/skeletons";
+import { VirtualizedItemList } from "@/src/components/items/virtualized-item-list";
 import { Button } from "@/src/components/ui/button";
 import { GUEST_ITEMS_PAGE_SIZE } from "@/src/lib/guest/constants";
 import { getFeedDisplayTitle } from "@/src/lib/format";
@@ -268,23 +269,24 @@ export function GuestItemList({
           </Button>
         </div>
       ) : (
-        <div className="rounded-lg border border-border bg-surface shadow-sm">
-          <ul className="divide-y divide-border-subtle">
-            {filteredItems.map((item) => (
-              <li key={item.id}>
-                <GuestItemRow item={item} scope={scope} />
-              </li>
-            ))}
-          </ul>
-        </div>
+        <VirtualizedItemList
+          items={filteredItems}
+          getItemKey={(item) => item.id}
+          renderItem={(item) => <GuestItemRow item={item} scope={scope} />}
+        />
       )}
 
       <div ref={sentinelRef} className="flex justify-center py-4">
         {isLoadingMore ? (
-          <span className="inline-flex items-center gap-2 text-sm text-text-secondary">
-            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-            Loading more…
-          </span>
+          <div className="w-full space-y-4">
+            <LoadMoreSkeleton count={3} />
+            <span className="flex justify-center">
+              <span className="inline-flex items-center gap-2 text-sm text-text-secondary">
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                Loading more…
+              </span>
+            </span>
+          </div>
         ) : hasMore ? (
           <Button type="button" variant="outline" size="sm" onClick={loadMore}>
             Load more

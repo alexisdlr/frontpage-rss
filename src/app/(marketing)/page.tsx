@@ -70,6 +70,8 @@ export default function MarketingPage() {
                 alt="Screenshot of the RSS feed reader"
                 width={1000}
                 height={1000}
+                sizes="(max-width: 1024px) 100vw, 1000px"
+                loading="lazy"
                 className="rounded-lg shadow-xl"
               />
             </div>

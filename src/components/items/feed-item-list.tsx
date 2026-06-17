@@ -5,7 +5,8 @@ import { Filter, Loader2 } from "lucide-react";
 
 import { getFeedItems } from "@/src/actions/items";
 import { FeedItemRow } from "@/src/components/items/feed-item-row";
-import { FeedItemSkeleton } from "@/src/components/items/skeletons";
+import { FeedItemSkeleton, LoadMoreSkeleton } from "@/src/components/items/skeletons";
+import { VirtualizedItemList } from "@/src/components/items/virtualized-item-list";
 import { Button } from "@/src/components/ui/button";
 import { cn } from "@/src/lib/utils";
 
@@ -189,23 +190,24 @@ export function FeedItemList({
           </Button>
         </div>
       ) : (
-        <div className="rounded-lg border border-border bg-surface shadow-sm">
-          <ul className="divide-y divide-border-subtle">
-            {filteredItems.map((item) => (
-              <li key={item.id}>
-                <FeedItemRow item={item} scope={scope} />
-              </li>
-            ))}
-          </ul>
-        </div>
+        <VirtualizedItemList
+          items={filteredItems}
+          getItemKey={(item) => item.id}
+          renderItem={(item) => <FeedItemRow item={item} scope={scope} />}
+        />
       )}
 
       <div ref={sentinelRef} className="flex justify-center py-4">
         {isLoadingMore ? (
-          <span className="inline-flex items-center gap-2 text-sm text-text-secondary">
-            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-            Loading more…
-          </span>
+          <div className="w-full space-y-4">
+            <LoadMoreSkeleton count={3} />
+            <span className="flex justify-center">
+              <span className="inline-flex items-center gap-2 text-sm text-text-secondary">
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                Loading more…
+              </span>
+            </span>
+          </div>
         ) : hasMore ? (
           <Button
             type="button"

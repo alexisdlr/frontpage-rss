@@ -83,7 +83,7 @@ export function AppShellClient({
           <div className="w-11" aria-hidden="true" />
         </header>
 
-        <main className="flex-1 overflow-y-auto">
+        <main id="app-main" className="flex-1 overflow-y-auto">
           <div className="mx-auto w-full max-w-feed px-4 py-6 sm:px-6">
             {children}
           </div>

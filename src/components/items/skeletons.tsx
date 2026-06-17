@@ -43,6 +43,17 @@ export function SidebarSkeleton() {
   );
 }
 
+export function LoadMoreSkeleton({ count = 3 }: { count?: number }) {
+  return (
+    <div
+      className="rounded-lg border border-border bg-surface shadow-sm"
+      aria-hidden="true"
+    >
+      <FeedItemSkeleton count={count} />
+    </div>
+  );
+}
+
 export function ReaderSkeleton() {
   return (
     <article className="mx-auto max-w-content animate-pulse space-y-6 px-4 py-8">

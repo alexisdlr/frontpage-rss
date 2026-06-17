@@ -9,6 +9,13 @@ type Props = {
 };
 
 export default async function Header({ categories = [] }: Props) {
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+  ) {
+    return <HeaderNav user={undefined} categories={categories} />;
+  }
+
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   const {
