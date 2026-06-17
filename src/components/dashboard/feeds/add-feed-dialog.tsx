@@ -47,11 +47,21 @@ type FeedPreview = {
 type AddFeedDialogProps = {
   categories: CategoryWithMeta[];
   onNavigate?: () => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  showTrigger?: boolean;
 };
 
-export function AddFeedDialog({ categories, onNavigate }: AddFeedDialogProps) {
+export function AddFeedDialog({
+  categories,
+  onNavigate,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
+  showTrigger = true,
+}: AddFeedDialogProps) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
   const [url, setUrl] = useState("");
   const [customTitle, setCustomTitle] = useState("");
   const [categoryId, setCategoryId] = useState("none");
@@ -71,7 +81,10 @@ export function AddFeedDialog({ categories, onNavigate }: AddFeedDialogProps) {
   }
 
   function handleOpenChange(next: boolean) {
-    setOpen(next);
+    if (controlledOpen === undefined) {
+      setInternalOpen(next);
+    }
+    controlledOnOpenChange?.(next);
     if (!next) {
       resetForm();
     }
@@ -147,16 +160,18 @@ export function AddFeedDialog({ categories, onNavigate }: AddFeedDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          className="min-h-11 w-full justify-start gap-2"
-        >
-          <Plus className="size-4" aria-hidden="true" />
-          Add feed
-        </Button>
-      </DialogTrigger>
+      {showTrigger ? (
+        <DialogTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            className="min-h-11 w-full justify-start gap-2"
+          >
+            <Plus className="size-4" aria-hidden="true" />
+            Add feed
+          </Button>
+        </DialogTrigger>
+      ) : null}
 
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>

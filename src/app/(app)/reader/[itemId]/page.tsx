@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { getAdjacentFeedItems, getFeedItem } from "@/src/actions/items";
-import { markItemRead } from "@/src/actions/read-state";
 import { ReaderArticle } from "@/src/components/reader/reader-article";
+import { ReaderMarkRead } from "@/src/components/reader/reader-mark-read";
 import { ReaderSkeleton } from "@/src/components/items/skeletons";
 import { parseItemListScope } from "@/src/lib/scope";
 
@@ -30,21 +30,20 @@ async function ReaderContent({
     notFound();
   }
 
-  if (!itemResult.data.isRead) {
-    await markItemRead(itemId);
-  }
-
   const adjacent = adjacentResult.ok
     ? adjacentResult.data
     : { previous: null, next: null };
 
   return (
-    <ReaderArticle
-      item={itemResult.data}
-      scope={scope}
-      previous={adjacent.previous}
-      next={adjacent.next}
-    />
+    <>
+      <ReaderMarkRead itemId={itemId} isRead={itemResult.data.isRead} />
+      <ReaderArticle
+        item={itemResult.data}
+        scope={scope}
+        previous={adjacent.previous}
+        next={adjacent.next}
+      />
+    </>
   );
 }
 

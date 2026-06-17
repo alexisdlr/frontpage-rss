@@ -14,6 +14,7 @@
   body {
     margin: 0;
     min-height: 100dvh;
+    background-color: var(--color-bg-primary);
     color: var(--color-text-primary);
     font-family: var(--font-sans);
     font-size: var(--text-base);
@@ -92,11 +93,163 @@
   }
 
   .hero-gradient {
+    position: relative;
     background-color: var(--color-bg-primary);
     background-image: radial-gradient(
       ellipse 55% 75% at -5% 42%,
       var(--color-hero-gradient-glow) 0%,
       transparent 68%
     );
+  }
+
+  .hero-gradient::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: var(--section-fade-height);
+    background-color: var(--color-surface);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
+    pointer-events: none;
+  }
+
+  .btn-marketing {
+    background-color: var(--color-bg-button-marketing);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 1rem;
+    font-size: var(--text-sm);
+  }
+
+  .btn-marketing:hover {
+    background-color: var(--color-bg-button-marketing-hover);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 1rem;
+    font-size: var(--text-sm);
+  }
+
+  .cta-banner {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    background-color: var(--color-cta-banner-bg);
+    padding: var(--space-12) var(--space-8);
+  }
+
+  @media (min-width: 640px) {
+    .cta-banner {
+      padding: var(--space-16) var(--space-12);
+    }
+  }
+
+  .cta-banner::before {
+    content: "";
+    position: absolute;
+    left: -35%;
+    top: 50%;
+    width: min(90%, 36rem);
+    aspect-ratio: 1;
+    translate: 0 -50%;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--palette-cream) 8%, transparent);
+    pointer-events: none;
+  }
+
+  .cta-banner__shapes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .cta-banner__circle {
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  .cta-banner__circle--sea {
+    width: clamp(12rem, 28vw, 18rem);
+    height: clamp(12rem, 28vw, 18rem);
+    right: -2rem;
+    top: 50%;
+    translate: 0 -50%;
+    background-color: var(--palette-sea);
+    opacity: 0.85;
+  }
+
+  .cta-banner__circle--mint {
+    width: clamp(9rem, 22vw, 14rem);
+    height: clamp(9rem, 22vw, 14rem);
+    right: clamp(4rem, 12vw, 8rem);
+    bottom: -3rem;
+    background-color: var(--palette-mint);
+    opacity: 0.55;
+  }
+
+  .cta-banner__circle--cream {
+    width: clamp(7rem, 16vw, 11rem);
+    height: clamp(7rem, 16vw, 11rem);
+    right: clamp(2rem, 8vw, 5rem);
+    top: -2.5rem;
+    background-color: var(--palette-cream);
+    opacity: 0.4;
+  }
+
+  .cta-banner__circle--accent-subtle {
+    width: clamp(6rem, 14vw, 9rem);
+    height: clamp(6rem, 14vw, 9rem);
+    right: clamp(10rem, 22vw, 14rem);
+    top: 55%;
+    translate: 0 -50%;
+    background-color: var(--color-accent-subtle);
+    opacity: 0.35;
+  }
+
+  .cta-banner__content {
+    position: relative;
+    z-index: 1;
+    max-width: 28rem;
+  }
+
+  .cta-banner__title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    line-height: var(--leading-tight);
+    color: var(--color-cta-banner-text);
+  }
+
+  @media (min-width: 640px) {
+    .cta-banner__title {
+      font-size: var(--text-3xl);
+    }
+  }
+
+  .cta-banner__description {
+    margin-top: var(--space-4);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-cta-banner-text-muted);
+  }
+
+  .cta-banner__button {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    margin-top: var(--space-8);
+    border-radius: var(--radius-md);
+    background-color: var(--color-accent);
+    padding: 0.625rem 1.25rem;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: white;
+    transition: background-color 150ms ease;
+  }
+
+  .cta-banner__button:hover {
+    background-color: var(--color-accent-hover);
   }
 }

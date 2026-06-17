@@ -1,3 +1,6 @@
+import Header from "@/src/components/shared/header";
+import { LogInIcon, RssIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 const highlights = [
@@ -26,61 +29,55 @@ const highlights = [
 export default function MarketingPage() {
   return (
     <div className="min-h-dvh bg-bg-primary">
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-page items-center justify-between px-4 py-4 sm:px-6">
-          <span className="text-lg font-semibold text-text-primary">
-            Frontpage
-          </span>
-          <nav className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="inline-flex min-h-11 items-center rounded-md px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/signup"
-              className="inline-flex min-h-11 items-center rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-            >
-              Sign up
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       <main>
-        <section className="hero-gradient animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
-          <div className="mx-auto max-w-content px-4 py-16 sm:px-6 sm:py-24">
-            <p className="text-sm font-medium uppercase tracking-wide text-accent">
-              RSS feed reader
-            </p>
-            <h1 className="mt-3 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
-              Take control of your news feed
-            </h1>
-            <p className="mt-4 max-w-2xl text-lg text-text-secondary">
-              Aggregate RSS and Atom feeds into a single, calm reading dashboard.
-              Organize by category, track what you&apos;ve read, and focus on the
-              content that matters.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/signup"
-                className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-              >
-                Sign up
-              </Link>
-              <Link
-                href="/guest"
-                className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary"
-              >
-                Try as Guest
-              </Link>
+        <section className="h-dvh hero-gradient animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
+          <div className="relative z-10 mx-auto max-w-content px-4 py-16 sm:px-6 sm:py-24 h-full flex flex-col justify-center gap-4">
+            <div className="flex flex-col items-start lg:items-center ">
+              <div className="flex items-center justify-start lg:justify-center gap-2">
+                <span className="w-6 h-6 bg-accent/10 rounded-full flex items-center justify-center">
+                  <RssIcon className="size-3 text-accent" />
+                </span>
+                <p className="text-sm font-medium uppercase tracking-wide text-accent">
+                  RSS feed reader
+                </p>
+              </div>
+              <h1 className="mt-3 text-3xl font-semibold tracking-tight text-start lg:text-center text-text-primary sm:text-4xl lg:text-5xl">
+                Take control of your news feed
+              </h1>
+              <p className="mt-4 max-w-2xl text-sm text-text-secondary text-start lg:text-center">
+                Aggregate RSS and Atom feeds into a single, calm reading
+                dashboard. Organize by category, track what you&apos;ve read,
+                and focus on the content that matters.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center justify-start flex-col lg:justify-center gap-3">
+                <Link
+                  href="/signup"
+                  className="flex min-h-11 items-center justify-center rounded-lg btn-marketing px-5 py-2.5 text-sm text-white transition-colors hover:bg-accent-hover border-none font-bold"
+                >
+                  <span>Create an account</span>{" "}
+                  <LogInIcon className="size-3 ml-2 " />
+                </Link>
+                <span className="text-text-secondary text-sm font-medium text-center">
+                  No credit card required
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center justify-center mt-10 lg:mt-0">
+              <Image
+                src="/images/screenshot.png"
+                alt="Screenshot of the RSS feed reader"
+                width={1000}
+                height={1000}
+                className="rounded-lg shadow-xl"
+              />
             </div>
           </div>
         </section>
 
         <section
-          className="border-t border-border "
+          className="bg-surface"
           aria-labelledby="features-heading"
         >
           <div className="mx-auto max-w-content px-4 py-16 sm:px-6">
@@ -112,30 +109,30 @@ export default function MarketingPage() {
           </div>
         </section>
 
-        <section className="border-t border-border">
-          <div className="mx-auto flex max-w-content flex-col items-start gap-4 px-4 py-12 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <div>
-              <h2 className="text-xl font-semibold text-text-primary">
-                Ready to get started?
-              </h2>
-              <p className="mt-1 text-sm text-text-secondary">
-                Create an account to save your feeds, or explore with guest
-                mode.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="/signup"
-                className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-              >
-                Sign up
-              </Link>
-              <Link
-                href="/guest"
-                className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary"
-              >
-                Try as Guest
-              </Link>
+        <section
+          className="bg-surface px-4 py-16 sm:px-6"
+          aria-labelledby="cta-heading"
+        >
+          <div className="mx-auto max-w-page">
+            <div className="cta-banner">
+              <div className="cta-banner__shapes" aria-hidden="true">
+                <span className="cta-banner__circle cta-banner__circle--sea" />
+                <span className="cta-banner__circle cta-banner__circle--mint" />
+                <span className="cta-banner__circle cta-banner__circle--cream" />
+                <span className="cta-banner__circle cta-banner__circle--accent-subtle" />
+              </div>
+              <div className="cta-banner__content">
+                <h2 id="cta-heading" className="cta-banner__title">
+                  Build your own newsfeed
+                </h2>
+                <p className="cta-banner__description">
+                  Ready to give it a go? Create an account — no credit card
+                  required.
+                </p>
+                <Link href="/signup" className="cta-banner__button">
+                  Create account
+                </Link>
+              </div>
             </div>
           </div>
         </section>

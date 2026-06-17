@@ -23,7 +23,7 @@ export default async function AppLayout({
 
   return (
     <>
-      <Header />
+      <Header categories={categories} />
       <AppShellClient
         categories={categories}
         feeds={feeds}

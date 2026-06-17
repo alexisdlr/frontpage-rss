@@ -11,7 +11,7 @@
   --color-surface: #fffbf2;
   --color-border: #c5ddd4;
   --color-border-subtle: #dceee6;
-
+  --color-bg-button-marketing: #1a312c;
   --color-text-primary: var(--palette-forest);
   --color-text-secondary: #4a635c;
   --color-text-tertiary: #6b857d;
@@ -27,6 +27,11 @@
   --color-unread-indicator: var(--palette-sea);
 
   --color-hero-gradient-glow: #dfece6;
+  --section-fade-height: 7rem;
+
+  --color-cta-banner-bg: var(--palette-forest);
+  --color-cta-banner-text: var(--palette-cream);
+  --color-cta-banner-text-muted: color-mix(in srgb, var(--palette-cream) 75%, transparent);
 
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-serif: "Georgia", "Charter", serif;

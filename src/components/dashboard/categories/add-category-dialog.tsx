@@ -35,13 +35,22 @@ import {
 } from "@/src/components/ui/select";
 import { createCategory } from "@/src/actions/categories";
 
-type AddFeedDialogProps = {
+type AddCategoryDialogProps = {
   onNavigate?: () => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  showTrigger?: boolean;
 };
 
-export function AddCategoryDialog({ onNavigate }: AddFeedDialogProps) {
+export function AddCategoryDialog({
+  onNavigate,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
+  showTrigger = true,
+}: AddCategoryDialogProps) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
   const [name, setName] = useState("");
 
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +64,10 @@ export function AddCategoryDialog({ onNavigate }: AddFeedDialogProps) {
   }
 
   function handleOpenChange(next: boolean) {
-    setOpen(next);
+    if (controlledOpen === undefined) {
+      setInternalOpen(next);
+    }
+    controlledOnOpenChange?.(next);
     if (!next) {
       resetForm();
     }
@@ -87,16 +99,18 @@ export function AddCategoryDialog({ onNavigate }: AddFeedDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          className="min-h-11 w-full justify-start gap-2"
-        >
-          <Plus className="size-4" aria-hidden="true" />
-          Add Category
-        </Button>
-      </DialogTrigger>
+      {showTrigger ? (
+        <DialogTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            className="min-h-11 w-full justify-start gap-2"
+          >
+            <Plus className="size-4" aria-hidden="true" />
+            Add Category
+          </Button>
+        </DialogTrigger>
+      ) : null}
 
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
