@@ -3,7 +3,7 @@
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
-import { AppSidebar } from "@/components/app-shell/app-sidebar";
+import { AppSidebar } from "@/components/dashboard/app-shell/app-sidebar";
 import { Button } from "@/components/ui/button";
 
 import type { CategoryWithMeta, FeedWithMeta } from "@/types/actions";
@@ -28,7 +28,7 @@ export function AppShellClient({
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex min-h-dvh bg-bg-primary">
+    <div className="flex min-h-dvh bg-white">
       <div className="hidden w-sidebar shrink-0 border-r border-border md:block">
         <AppSidebar
           categories={categories}
@@ -68,7 +68,9 @@ export function AppShellClient({
             variant="outline"
             size="icon"
             className="min-h-11 min-w-11"
-            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-label={
+              mobileOpen ? "Close navigation menu" : "Open navigation menu"
+            }
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((open) => !open)}
           >
@@ -78,12 +80,16 @@ export function AppShellClient({
               <Menu className="size-5" aria-hidden="true" />
             )}
           </Button>
-          <span className="text-base font-semibold text-text-primary">Frontpage</span>
+          <span className="text-base font-semibold text-text-primary">
+            Frontpage
+          </span>
           <div className="w-11" aria-hidden="true" />
         </header>
 
         <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-feed px-4 py-6 sm:px-6">{children}</div>
+          <div className="mx-auto w-full max-w-feed px-4 py-6 sm:px-6">
+            {children}
+          </div>
         </main>
       </div>
     </div>

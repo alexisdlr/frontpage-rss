@@ -62,20 +62,9 @@ export function GuestSidebar({ onNavigate, className }: GuestSidebarProps) {
 
   return (
     <aside
-      className={cn("flex h-full flex-col bg-bg-secondary", className)}
+      className={cn("flex h-dvh md:mt-16 flex-col bg-surface", className)}
       aria-label="Guest sidebar navigation"
     >
-      <div className="border-b border-border px-4 py-4">
-        <Link
-          href="/guest"
-          className="text-lg font-semibold text-text-primary"
-          onClick={onNavigate}
-        >
-          Frontpage
-        </Link>
-        <p className="mt-1 text-xs text-text-tertiary">Guest mode</p>
-      </div>
-
       <nav
         className="flex-1 overflow-y-auto scrollbar-none px-3 py-4"
         aria-label="Main navigation"

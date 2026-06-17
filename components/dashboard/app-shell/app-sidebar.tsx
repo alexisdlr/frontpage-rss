@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { FolderOpen, Inbox, Layers, Plus, Rss } from "lucide-react";
 
 import { SignOutButton } from "@/components/auth/sign-out-button";
-import { AddFeedDialog } from "@/components/feeds/add-feed-dialog";
+import { AddFeedDialog } from "@/components/dashboard/feeds/add-feed-dialog";
 import { cn } from "@/lib/utils";
 
 import type { CategoryWithMeta, FeedWithMeta } from "@/types/actions";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { AddCategoryDialog } from "../categories/add-category-dialog";
 
 type AppSidebarProps = {
@@ -78,10 +78,10 @@ export function AppSidebar({
 
   return (
     <aside
-      className={cn("flex h-full flex-col bg-bg-secondary", className)}
+      className={cn("flex md:mt-16 h-full flex-col bg-surface", className)}
       aria-label="Sidebar navigation"
     >
-      <div className="border-b border-border px-4 py-4">
+      {/* <div className="border-b border-border px-4 py-4">
         <Link
           href="/dashboard"
           className="text-lg font-semibold text-text-primary"
@@ -89,7 +89,7 @@ export function AppSidebar({
         >
           Frontpage
         </Link>
-      </div>
+      </div> */}
 
       <nav
         className="flex-1 overflow-y-auto scrollbar-none px-3 py-4"

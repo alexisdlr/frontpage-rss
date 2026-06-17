@@ -1,7 +1,8 @@
 import { getCategories } from "@/actions/categories";
 import { getFeeds } from "@/actions/feeds";
 import { getUnreadCounts } from "@/actions/read-state";
-import { AppShellClient } from "@/components/app-shell/app-shell-client";
+import { AppShellClient } from "@/components/dashboard/app-shell/app-shell-client";
+import Header from "@/components/dashboard/shared/header";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 
@@ -29,14 +30,17 @@ export default async function AppLayout({
     : { total: 0, uncategorized: 0, byFeed: {}, byCategory: {} };
 
   return (
-    <AppShellClient
-      categories={categories}
-      feeds={feeds}
-      totalUnread={unread.total}
-      uncategorizedUnread={unread.uncategorized}
-      userEmail={user?.email}
-    >
-      {children}
-    </AppShellClient>
+    <>
+      <Header />
+      <AppShellClient
+        categories={categories}
+        feeds={feeds}
+        totalUnread={unread.total}
+        uncategorizedUnread={unread.uncategorized}
+        userEmail={user?.email}
+      >
+        {children}
+      </AppShellClient>
+    </>
   );
 }

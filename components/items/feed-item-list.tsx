@@ -108,7 +108,7 @@ export function FeedItemList({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 ">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-text-secondary">
           {totalCount.toLocaleString()} {totalCount === 1 ? "item" : "items"}
@@ -123,7 +123,10 @@ export function FeedItemList({
         <div className="flex flex-wrap items-center gap-2">
           {feedsInScope.length > 1 ? (
             <label className="flex items-center gap-2 text-sm text-text-secondary">
-              <Filter className="size-4 shrink-0 text-text-tertiary" aria-hidden="true" />
+              <Filter
+                className="size-4 shrink-0 text-text-tertiary"
+                aria-hidden="true"
+              />
               <span className="sr-only">Filter by feed</span>
               <select
                 value={feedFilter}
@@ -204,11 +207,18 @@ export function FeedItemList({
             Loading more…
           </span>
         ) : hasMore ? (
-          <Button type="button" variant="outline" size="sm" onClick={() => void loadMore()}>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => void loadMore()}
+          >
             Load more
           </Button>
         ) : items.length > 0 ? (
-          <p className="text-sm text-text-tertiary">You&apos;ve reached the end</p>
+          <p className="text-sm text-text-tertiary">
+            You&apos;ve reached the end
+          </p>
         ) : null}
       </div>
     </div>

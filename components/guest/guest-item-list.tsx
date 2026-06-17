@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { CheckCheck, ChevronDown, Filter, Loader2 } from "lucide-react";
 
 import { useGuest } from "@/components/guest/guest-provider";
@@ -21,7 +28,11 @@ type GuestItemListProps = {
   unreadCount: number;
 };
 
-export function GuestItemList({ scope, title, unreadCount }: GuestItemListProps) {
+export function GuestItemList({
+  scope,
+  title,
+  unreadCount,
+}: GuestItemListProps) {
   const { getItemsForScope, markAllReadInScope, isHydrated } = useGuest();
   const [readFilter, setReadFilter] = useState<ReadFilter>("all");
   const [feedFilter, setFeedFilter] = useState<string>("all");
@@ -187,7 +198,10 @@ export function GuestItemList({ scope, title, unreadCount }: GuestItemListProps)
         <div className="flex flex-wrap items-center gap-2">
           {feedsInScope.length > 1 ? (
             <label className="flex items-center gap-2 text-sm text-text-secondary">
-              <Filter className="size-4 shrink-0 text-text-tertiary" aria-hidden="true" />
+              <Filter
+                className="size-4 shrink-0 text-text-tertiary"
+                aria-hidden="true"
+              />
               <span className="sr-only">Filter by feed</span>
               <select
                 value={feedFilter}
@@ -276,7 +290,9 @@ export function GuestItemList({ scope, title, unreadCount }: GuestItemListProps)
             Load more
           </Button>
         ) : loadedItems.length > 0 ? (
-          <p className="text-sm text-text-tertiary">You&apos;ve reached the end</p>
+          <p className="text-sm text-text-tertiary">
+            You&apos;ve reached the end
+          </p>
         ) : null}
       </div>
     </div>

@@ -55,7 +55,7 @@ export function FeedListHeader({
   }
 
   return (
-    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div className="mb-6 md:mt-16 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
       <div>
         <h1 className="text-xl font-semibold text-text-primary sm:text-2xl">
           {title}

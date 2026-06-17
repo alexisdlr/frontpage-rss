@@ -53,7 +53,7 @@ export function GuestItemRow({ item, scope }: GuestItemRowProps) {
   return (
     <article
       className={cn(
-        "group relative flex gap-3 border-b border-border-subtle px-1 py-4 transition-colors hover:bg-bg-tertiary/60",
+        "group relative flex gap-3 border-b border-border-subtle px-2 py-4 transition-colors hover:bg-bg-tertiary/60",
         item.isRead && "opacity-70",
       )}
     >
@@ -64,7 +64,10 @@ export function GuestItemRow({ item, scope }: GuestItemRowProps) {
             aria-label="Unread"
           />
         ) : (
-          <span className="mt-1.5 size-2 rounded-full bg-transparent" aria-hidden="true" />
+          <span
+            className="mt-1.5 size-2 rounded-full bg-transparent"
+            aria-hidden="true"
+          />
         )}
       </div>
 

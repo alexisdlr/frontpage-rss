@@ -15,7 +15,7 @@ export function GuestShell({ children }: GuestShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex min-h-dvh bg-bg-primary">
+    <div className="flex min-h-dvh bg-surface">
       <div className="hidden w-sidebar shrink-0 border-r border-border md:block">
         <GuestSidebar className="sticky top-0 h-dvh " />
       </div>
@@ -60,7 +60,7 @@ export function GuestShell({ children }: GuestShellProps) {
         </header>
 
         <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-feed px-4 py-6 sm:px-6">
+          <div className="mx-auto w-full max-w-feed px-4 py-6 md:mt-16 sm:px-6">
             <GuestBanner />
             {children}
           </div>

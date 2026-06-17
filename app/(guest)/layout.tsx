@@ -4,6 +4,7 @@ import { GuestProvider } from "@/components/guest/guest-provider";
 import { GuestLayoutSkeleton } from "@/components/guest/guest-layout-skeleton";
 import { GuestShell } from "@/components/guest/guest-shell";
 import { loadGuestFeedData } from "@/lib/guest/load-data";
+import Header from "@/components/dashboard/shared/header";
 
 async function GuestLayoutContent({
   children,
@@ -14,7 +15,10 @@ async function GuestLayoutContent({
 
   return (
     <GuestProvider initialData={data}>
-      <GuestShell>{children}</GuestShell>
+      <>
+        <Header />
+        <GuestShell>{children}</GuestShell>
+      </>
     </GuestProvider>
   );
 }
