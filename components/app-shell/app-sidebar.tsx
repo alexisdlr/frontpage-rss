@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FolderOpen, Inbox, Layers, Rss } from "lucide-react";
+import { FolderOpen, Inbox, Layers, Plus, Rss } from "lucide-react";
 
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { AddFeedDialog } from "@/components/feeds/add-feed-dialog";
 import { cn } from "@/lib/utils";
 
 import type { CategoryWithMeta, FeedWithMeta } from "@/types/actions";
+import { Button } from "../ui/button";
+import { AddCategoryDialog } from "../categories/add-category-dialog";
 
 type AppSidebarProps = {
   categories: CategoryWithMeta[];
@@ -88,7 +91,10 @@ export function AppSidebar({
         </Link>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Main navigation">
+      <nav
+        className="flex-1 overflow-y-auto scrollbar-none px-3 py-4"
+        aria-label="Main navigation"
+      >
         <ul className="space-y-1">
           <li>
             <NavLink
@@ -102,10 +108,15 @@ export function AppSidebar({
           </li>
         </ul>
 
+        <div className="mt-4 px-0">
+          <AddFeedDialog categories={categories} onNavigate={onNavigate} />
+        </div>
+
         <div className="mt-6">
           <p className="px-3 text-xs font-medium uppercase tracking-wide text-text-tertiary">
             Categories
           </p>
+          <AddCategoryDialog onNavigate={onNavigate} />
           <ul className="mt-2 space-y-1">
             {categories.map((category) => (
               <li key={category.id}>

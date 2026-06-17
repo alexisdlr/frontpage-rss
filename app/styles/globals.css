@@ -40,9 +40,15 @@
     color: var(--color-text-primary);
   }
 
-  .reader-content h1 { font-size: var(--text-2xl); }
-  .reader-content h2 { font-size: var(--text-xl); }
-  .reader-content h3 { font-size: var(--text-lg); }
+  .reader-content h1 {
+    font-size: var(--text-2xl);
+  }
+  .reader-content h2 {
+    font-size: var(--text-xl);
+  }
+  .reader-content h3 {
+    font-size: var(--text-lg);
+  }
 
   .reader-content p,
   .reader-content ul,
@@ -84,5 +90,14 @@
     border-left: 3px solid var(--color-border);
     padding-left: 1rem;
     color: var(--color-text-secondary);
+  }
+
+  .hero-gradient {
+    background-color: var(--color-bg-primary);
+    background-image: radial-gradient(
+      ellipse 55% 75% at -5% 42%,
+      var(--color-hero-gradient-glow) 0%,
+      transparent 68%
+    );
   }
 }

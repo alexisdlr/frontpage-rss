@@ -49,36 +49,38 @@ export default function MarketingPage() {
       </header>
 
       <main>
-        <section className=" animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both mx-auto max-w-content px-4 py-16 sm:px-6 sm:py-24">
-          <p className="text-sm font-medium uppercase tracking-wide text-accent">
-            RSS feed reader
-          </p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
-            Take control of your news feed
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg text-text-secondary">
-            Aggregate RSS and Atom feeds into a single, calm reading dashboard.
-            Organize by category, track what you&apos;ve read, and focus on the
-            content that matters.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/signup"
-              className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-            >
-              Sign up
-            </Link>
-            <Link
-              href="/guest"
-              className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary"
-            >
-              Try as Guest
-            </Link>
+        <section className="hero-gradient animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
+          <div className="mx-auto max-w-content px-4 py-16 sm:px-6 sm:py-24">
+            <p className="text-sm font-medium uppercase tracking-wide text-accent">
+              RSS feed reader
+            </p>
+            <h1 className="mt-3 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+              Take control of your news feed
+            </h1>
+            <p className="mt-4 max-w-2xl text-lg text-text-secondary">
+              Aggregate RSS and Atom feeds into a single, calm reading dashboard.
+              Organize by category, track what you&apos;ve read, and focus on the
+              content that matters.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/signup"
+                className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+              >
+                Sign up
+              </Link>
+              <Link
+                href="/guest"
+                className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary"
+              >
+                Try as Guest
+              </Link>
+            </div>
           </div>
         </section>
 
         <section
-          className="border-t border-border bg-bg-secondary"
+          className="border-t border-border "
           aria-labelledby="features-heading"
         >
           <div className="mx-auto max-w-content px-4 py-16 sm:px-6">

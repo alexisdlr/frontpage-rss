@@ -17,7 +17,7 @@ export function GuestShell({ children }: GuestShellProps) {
   return (
     <div className="flex min-h-dvh bg-bg-primary">
       <div className="hidden w-sidebar shrink-0 border-r border-border md:block">
-        <GuestSidebar className="sticky top-0 h-dvh" />
+        <GuestSidebar className="sticky top-0 h-dvh " />
       </div>
 
       {mobileOpen ? (
@@ -41,7 +41,9 @@ export function GuestShell({ children }: GuestShellProps) {
             variant="outline"
             size="icon"
             className="min-h-11 min-w-11"
-            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-label={
+              mobileOpen ? "Close navigation menu" : "Open navigation menu"
+            }
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((open) => !open)}
           >
@@ -51,7 +53,9 @@ export function GuestShell({ children }: GuestShellProps) {
               <Menu className="size-5" aria-hidden="true" />
             )}
           </Button>
-          <span className="text-base font-semibold text-text-primary">Frontpage</span>
+          <span className="text-base font-semibold text-text-primary">
+            Frontpage
+          </span>
           <div className="w-11" aria-hidden="true" />
         </header>
 

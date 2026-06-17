@@ -76,7 +76,10 @@ export function GuestSidebar({ onNavigate, className }: GuestSidebarProps) {
         <p className="mt-1 text-xs text-text-tertiary">Guest mode</p>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Main navigation">
+      <nav
+        className="flex-1 overflow-y-auto scrollbar-none px-3 py-4"
+        aria-label="Main navigation"
+      >
         <ul className="space-y-1">
           <li>
             <NavLink
