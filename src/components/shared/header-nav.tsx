@@ -15,6 +15,7 @@ import {
 import { useState } from "react";
 
 import { signOut } from "@/src/actions/auth";
+import { startNavigationProgress } from "@/src/lib/navigation-progress";
 import { AddCategoryDialog } from "@/src/components/dashboard/categories/add-category-dialog";
 import { AddFeedDialog } from "@/src/components/dashboard/feeds/add-feed-dialog";
 import { Button } from "@/src/components/ui/button";
@@ -47,6 +48,7 @@ const HeaderNav = ({ user, categories }: Props) => {
   const isMarketing = pathname === "/";
   const isGuestMode = pathname === "/guest";
   const handleSignOut = async () => {
+    startNavigationProgress({ showOverlay: true });
     await signOut();
   };
 

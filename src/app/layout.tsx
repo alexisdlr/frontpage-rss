@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { Suspense } from "react";
+
+import { NavigationProgress } from "@/src/components/shared/navigation-progress";
 import "./styles/globals.css";
 
 const inter = Inter({
@@ -9,7 +12,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Frontpage",
+  title: {
+    template: "%s | Frontpage",
+    default: "Frontpage",
+  },
   icons: {
     icon: "./favicon.ico",
   },
@@ -29,6 +35,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
+        <Suspense fallback={null}>
+          <NavigationProgress />
+        </Suspense>
         {children}
       </body>
     </html>

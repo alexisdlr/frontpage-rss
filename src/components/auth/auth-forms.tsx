@@ -14,6 +14,7 @@ import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
+import { useRedirectNavigationProgress } from "@/src/hooks/use-redirect-navigation-progress";
 
 const initialState: AuthActionState = {};
 
@@ -80,6 +81,7 @@ function SubmitButton({ label, pending }: { label: string; pending: boolean }) {
 
 export function LoginForm({ redirectTo }: { redirectTo?: string }) {
   const [state, formAction, pending] = useActionState(signIn, initialState);
+  useRedirectNavigationProgress(pending, Boolean(state.error));
 
   return (
     <form action={formAction} className="space-y-4">
@@ -109,6 +111,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 
 export function SignUpForm() {
   const [state, formAction, pending] = useActionState(signUp, initialState);
+  useRedirectNavigationProgress(pending, Boolean(state.error));
 
   return (
     <form action={formAction} className="space-y-4">
@@ -151,6 +154,7 @@ export function UpdatePasswordForm() {
     updatePassword,
     initialState,
   );
+  useRedirectNavigationProgress(pending, Boolean(state.error));
 
   return (
     <form action={formAction} className="space-y-4">
