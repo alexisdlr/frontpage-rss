@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { CheckCheck, ChevronDown } from "lucide-react";
+import { CheckCheck, PencilIcon, TrashIcon } from "lucide-react";
 import { useState, useTransition } from "react";
 
 import {
@@ -13,6 +13,12 @@ import {
 import { Button } from "@/src/components/ui/button";
 
 import type { ItemListScope } from "@/src/types/actions";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 type FeedListHeaderProps = {
   scope: ItemListScope;
@@ -70,46 +76,42 @@ export function FeedListHeader({
       </div>
 
       {unreadCount > 0 ? (
-        <div className="relative">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="min-h-10"
-            disabled={isPending}
-            aria-expanded={open}
-            aria-haspopup="menu"
-            onClick={() => setOpen((value) => !value)}
-          >
-            <CheckCheck className="size-4" aria-hidden="true" />
-            Mark all read
-            <ChevronDown className="size-4" aria-hidden="true" />
-          </Button>
-
-          {open ? (
-            <>
-              <button
+        <div className="relative flex items-center gap-2">
+          <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button
                 type="button"
-                className="fixed inset-0 z-10 cursor-default"
-                aria-label="Close menu"
-                onClick={() => setOpen(false)}
-              />
-              <div
-                role="menu"
-                className="absolute right-0 z-20 mt-2 w-56 rounded-md border border-border bg-surface p-1 shadow-md"
+                variant="outline"
+                size="sm"
+                className="min-h-10 cursor-pointer"
+                disabled={isPending}
+                aria-expanded={open}
+                aria-haspopup="menu"
               >
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="flex w-full rounded-sm px-3 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-                  disabled={isPending}
-                  onClick={() => void handleMarkAllRead()}
-                >
-                  Mark all in {title.toLowerCase()} as read
-                </button>
-              </div>
-            </>
-          ) : null}
+                Actions
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="absolute -right-12 top-0 z-20 mt-1 w-56 rounded-md border border-border bg-surface p-1 shadow-md">
+              <DropdownMenuItem
+                onClick={() => void handleMarkAllRead()}
+                className="cursor-pointer transition-all duration-300"
+              >
+                <CheckCheck className="size-4" aria-hidden="true" />
+                Mark all as read
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer transition-all duration-300">
+                <PencilIcon className="size-4" aria-hidden="true" />
+                Edit feed
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                className="cursor-pointer transition-all duration-300"
+              >
+                <TrashIcon className="size-4" aria-hidden="true" />
+                Delete feed
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       ) : null}
     </div>

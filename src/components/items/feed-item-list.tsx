@@ -5,7 +5,10 @@ import { Filter, Loader2 } from "lucide-react";
 
 import { getFeedItems } from "@/src/actions/items";
 import { FeedItemRow } from "@/src/components/items/feed-item-row";
-import { FeedItemSkeleton, LoadMoreSkeleton } from "@/src/components/items/skeletons";
+import {
+  FeedItemSkeleton,
+  LoadMoreSkeleton,
+} from "@/src/components/items/skeletons";
 import { VirtualizedItemList } from "@/src/components/items/virtualized-item-list";
 import { Button } from "@/src/components/ui/button";
 import { cn } from "@/src/lib/utils";
@@ -169,7 +172,7 @@ export function FeedItemList({
         </div>
       </div>
 
-      {isPending ? <FeedItemSkeleton count={3} /> : null}
+      {isPending ? <FeedItemSkeleton count={5} /> : null}
 
       {filteredItems.length === 0 ? (
         <div className="rounded-lg border border-border bg-surface px-6 py-10 text-center">
