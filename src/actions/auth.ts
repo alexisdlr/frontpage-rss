@@ -43,7 +43,7 @@ export async function signUp(
     return { error: error.message };
   }
 
-  redirect("/dashboard");
+  redirect("/verify-email");
 }
 
 export async function signIn(

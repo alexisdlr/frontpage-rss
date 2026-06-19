@@ -187,7 +187,7 @@ export function NavigationProgress() {
   return (
     <>
       <div
-        className="pointer-events-none fixed inset-x-0 top-0 z-[200] h-[3px]"
+        className="pointer-events-none fixed inset-x-0 top-0 z-200 h-[3px]"
         aria-hidden={!showBar}
       >
         <motion.div
@@ -216,7 +216,7 @@ export function NavigationProgress() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             className={cn(
-              "fixed inset-0 z-[190] flex items-center justify-center bg-bg-primary",
+              "fixed inset-0 z-190 flex items-center justify-center bg-bg-primary",
             )}
           >
             <RouteLoadingScreen />

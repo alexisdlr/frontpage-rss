@@ -211,15 +211,6 @@ export function FeedItemList({
               </span>
             </span>
           </div>
-        ) : hasMore ? (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => void loadMore()}
-          >
-            Load more
-          </Button>
         ) : items.length > 0 ? (
           <p className="text-sm text-text-tertiary">
             You&apos;ve reached the end

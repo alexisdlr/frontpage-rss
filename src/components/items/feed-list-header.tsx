@@ -12,27 +12,39 @@ import {
 } from "@/src/actions/read-state";
 import { Button } from "@/src/components/ui/button";
 
-import type { ItemListScope } from "@/src/types/actions";
+import type {
+  CategoryWithMeta,
+  FeedWithMeta,
+  ItemListScope,
+} from "@/src/types/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import EditFeedDialog from "../dashboard/feeds/edit-feed-dialog";
+import DeleteFeedDialog from "../dashboard/feeds/delete-feed-dialog";
+import { motion } from "framer-motion";
 
 type FeedListHeaderProps = {
+  categories: CategoryWithMeta[];
   scope: ItemListScope;
   title: string;
+  feed?: FeedWithMeta;
   unreadCount: number;
 };
 
 export function FeedListHeader({
+  categories,
+  feed,
   scope,
   title,
   unreadCount,
 }: FeedListHeaderProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [editFeedOpen, setEditFeedOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   async function handleMarkAllRead() {
@@ -61,7 +73,12 @@ export function FeedListHeader({
   }
 
   return (
-    <div className="mb-6 md:mt-16 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="mb-6 md:mt-16 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
+    >
       <div>
         <h1 className="text-xl font-semibold text-text-primary sm:text-2xl">
           {title}
@@ -75,7 +92,7 @@ export function FeedListHeader({
         </p>
       </div>
 
-      {unreadCount > 0 ? (
+      {unreadCount > 0 || (scope.type === "feed" && feed) ? (
         <div className="relative flex items-center gap-2">
           <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
             <DropdownMenuTrigger asChild>
@@ -92,28 +109,49 @@ export function FeedListHeader({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="absolute -right-12 top-0 z-20 mt-1 w-56 rounded-md border border-border bg-surface p-1 shadow-md">
-              <DropdownMenuItem
-                onClick={() => void handleMarkAllRead()}
-                className="cursor-pointer transition-all duration-300"
-              >
-                <CheckCheck className="size-4" aria-hidden="true" />
-                Mark all as read
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer transition-all duration-300">
-                <PencilIcon className="size-4" aria-hidden="true" />
-                Edit feed
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                variant="destructive"
-                className="cursor-pointer transition-all duration-300"
-              >
-                <TrashIcon className="size-4" aria-hidden="true" />
-                Delete feed
-              </DropdownMenuItem>
+              {unreadCount > 0 ? (
+                <DropdownMenuItem
+                  onClick={() => void handleMarkAllRead()}
+                  className="cursor-pointer transition-all duration-300"
+                >
+                  <CheckCheck className="size-4" aria-hidden="true" />
+                  Mark all as read
+                </DropdownMenuItem>
+              ) : null}
+              {scope.type === "feed" && feed ? (
+                <>
+                  <DropdownMenuItem
+                    onClick={() => setEditFeedOpen(true)}
+                    className="cursor-pointer transition-all duration-300"
+                  >
+                    <PencilIcon className="size-4" aria-hidden="true" />
+                    Edit feed
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    className="cursor-pointer transition-all duration-300"
+                  >
+                    <TrashIcon className="size-4" aria-hidden="true" />
+                    Delete feed
+                  </DropdownMenuItem>
+                </>
+              ) : null}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       ) : null}
-    </div>
+
+      {scope.type === "feed" && feed ? (
+        <>
+          <EditFeedDialog
+            open={editFeedOpen}
+            onOpenChange={(next) => setEditFeedOpen(next)}
+            feed={feed}
+            categories={categories}
+          />
+          <DeleteFeedDialog />
+        </>
+      ) : null}
+    </motion.div>
   );
 }

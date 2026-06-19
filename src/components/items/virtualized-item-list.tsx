@@ -24,8 +24,7 @@ export function VirtualizedItemList<T>({
   const virtualizer = useVirtualizer({
     count: items.length,
     getScrollElement: () =>
-      listRef.current?.closest("main") ??
-      document.getElementById("app-main"),
+      listRef.current?.closest("main") ?? document.getElementById("app-main"),
     estimateSize: () => ESTIMATED_ROW_HEIGHT,
     overscan: 8,
     enabled: shouldVirtualize,

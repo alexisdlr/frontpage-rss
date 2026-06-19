@@ -1,3 +1,5 @@
+import { getCategories } from "@/src/actions/categories";
+import { getFeed } from "@/src/actions/feeds";
 import { FeedItemList } from "@/src/components/items/feed-item-list";
 import { FeedListHeader } from "@/src/components/items/feed-list-header";
 import { getFeedDisplayTitle } from "@/src/lib/format";
@@ -18,7 +20,7 @@ type FeedBrowseViewProps = {
   hasMore: boolean;
 };
 
-export function FeedBrowseView({
+export async function FeedBrowseView({
   scope,
   title,
   unreadCount,
@@ -39,9 +41,26 @@ export function FeedBrowseView({
     ).values(),
   ).sort((a, b) => a.title.localeCompare(b.title));
 
+  const feedResult = scope.type === "feed" ? await getFeed(scope.feedId) : null;
+
+  if (feedResult !== null && !feedResult.ok) {
+    return <div>Error loading feed</div>;
+  }
+
+  const categories = await getCategories();
+  if (!categories.ok) {
+    return <div>Error loading categories</div>;
+  }
+
   return (
     <>
-      <FeedListHeader scope={scope} title={title} unreadCount={unreadCount} />
+      <FeedListHeader
+        categories={categories.data}
+        scope={scope}
+        title={title}
+        feed={feedResult?.data}
+        unreadCount={unreadCount}
+      />
       <FeedItemList
         scope={scope}
         initialItems={items}
