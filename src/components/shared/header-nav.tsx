@@ -44,6 +44,7 @@ const HeaderNav = ({ user, categories }: Props) => {
   const isDashboard =
     pathname === "/dashboard" ||
     pathname === "/saved" ||
+    pathname.includes("/category") ||
     pathname.includes("/feed");
   const isMarketing = pathname === "/";
   const isGuestMode = pathname === "/guest";

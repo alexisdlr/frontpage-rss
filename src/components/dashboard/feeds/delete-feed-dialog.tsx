@@ -1,9 +1,9 @@
 "use client";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { deleteFeed, getFeed, updateFeed } from "@/src/actions/feeds";
+import { deleteFeed } from "@/src/actions/feeds";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { Button } from "@/src/components/ui/button";
 
@@ -14,19 +14,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/src/components/ui/dialog";
-import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/src/components/ui/select";
 
-import { CategoryWithMeta, FeedWithMeta } from "@/src/types/actions";
+import { FeedWithMeta } from "@/src/types/actions";
 
 type DeleteFeedDialogProps = {
   feed: FeedWithMeta;
@@ -43,9 +33,9 @@ export default function DeleteFeedDialogProps({
   const router = useRouter();
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen ?? internalOpen;
-
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const categoryId = feed?.category_id;
   function resetForm() {
     setIsDeleting(false);
   }
@@ -74,7 +64,7 @@ export default function DeleteFeedDialogProps({
 
     setIsDeleting(false);
     handleOpenChange(false);
-    router.refresh();
+    router.push(`/category/${categoryId}`);
   }
 
   if (!feed) return null;
@@ -83,9 +73,12 @@ export default function DeleteFeedDialogProps({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Edit {feed.custom_title} feed</DialogTitle>
-          <DialogDescription>
-            Edit the feed URL. We&apos;ll validate it before saving.
+          <DialogTitle className="text-2xl font-bold ">
+            Delete {feed.displayTitle} feed
+          </DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">
+            Are you sure you want to delete this feed? This action cannot be
+            undone.
           </DialogDescription>
         </DialogHeader>
 
@@ -95,11 +88,6 @@ export default function DeleteFeedDialogProps({
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           ) : null}
-
-          <div className="space-y-2">
-            <Label htmlFor="feed-url">Feed URL</Label>
-            <div className="flex flex-col gap-2 sm:flex-row"></div>
-          </div>
         </div>
 
         <DialogFooter>
@@ -113,6 +101,7 @@ export default function DeleteFeedDialogProps({
           </Button>
           <Button
             type="button"
+            variant="destructive"
             className="cursor-pointer"
             disabled={isDeleting || !feed}
             onClick={() => void handleDelete()}

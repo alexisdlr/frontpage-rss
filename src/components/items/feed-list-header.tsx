@@ -45,6 +45,7 @@ export function FeedListHeader({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [editFeedOpen, setEditFeedOpen] = useState(false);
+  const [deleteFeedOpen, setDeleteFeedOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   async function handleMarkAllRead() {
@@ -108,7 +109,7 @@ export function FeedListHeader({
                 Actions
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="absolute -right-12 top-0 z-20 mt-1 w-56 rounded-md border border-border bg-surface p-1 shadow-md">
+            <DropdownMenuContent className=" z-20 mt-1 rounded-md border border-border bg-surface p-1 shadow-md">
               {unreadCount > 0 ? (
                 <DropdownMenuItem
                   onClick={() => void handleMarkAllRead()}
@@ -128,6 +129,7 @@ export function FeedListHeader({
                     Edit feed
                   </DropdownMenuItem>
                   <DropdownMenuItem
+                    onClick={() => setDeleteFeedOpen(true)}
                     variant="destructive"
                     className="cursor-pointer transition-all duration-300"
                   >
@@ -149,7 +151,11 @@ export function FeedListHeader({
             feed={feed}
             categories={categories}
           />
-          <DeleteFeedDialog />
+          <DeleteFeedDialog
+            open={deleteFeedOpen}
+            onOpenChange={(next) => setDeleteFeedOpen(next)}
+            feed={feed}
+          />
         </>
       ) : null}
     </motion.div>
