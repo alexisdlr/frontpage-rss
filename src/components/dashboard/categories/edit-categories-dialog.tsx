@@ -145,9 +145,7 @@ const EditCategoriesDialog = ({
         category={deletingCategory}
         categories={internalCategories}
         feedCount={
-          deletingCategory
-            ? (feedCountByCategory[deletingCategory.id] ?? 0)
-            : 0
+          deletingCategory ? (feedCountByCategory[deletingCategory.id] ?? 0) : 0
         }
         open={deletingCategory !== null}
         onOpenChange={(next) => {
@@ -200,6 +198,7 @@ function Sortable({
           className="cursor-pointer"
           variant="outline"
           size="sm"
+          aria-label={`Rename ${category.name}`}
           onClick={onRename}
         >
           <Pencil className="size-4" aria-hidden="true" />

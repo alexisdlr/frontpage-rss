@@ -1,7 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { CheckCheck, PencilIcon, TrashIcon } from "lucide-react";
+import {
+  CheckCheck,
+  Loader2,
+  PencilIcon,
+  RefreshCcwIcon,
+  TrashIcon,
+} from "lucide-react";
 import { useState, useTransition } from "react";
 
 import {
@@ -26,6 +32,7 @@ import {
 import EditFeedDialog from "../dashboard/feeds/edit-feed-dialog";
 import DeleteFeedDialog from "../dashboard/feeds/delete-feed-dialog";
 import { motion } from "framer-motion";
+import { refreshFeed } from "@/src/actions/feeds";
 
 type FeedListHeaderProps = {
   categories: CategoryWithMeta[];
@@ -48,6 +55,15 @@ export function FeedListHeader({
   const [deleteFeedOpen, setDeleteFeedOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
+  async function handleRefreshFeed() {
+    if (!feed) return;
+    startTransition(async () => {
+      const result = await refreshFeed(feed.id);
+      if (result.ok) {
+        router.refresh();
+      }
+    });
+  }
   async function handleMarkAllRead() {
     startTransition(async () => {
       let result;
@@ -135,6 +151,23 @@ export function FeedListHeader({
                   >
                     <TrashIcon className="size-4" aria-hidden="true" />
                     Delete feed
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => void handleRefreshFeed()}
+                    className="cursor-pointer transition-all duration-300"
+                  >
+                    <RefreshCcwIcon className="size-4" aria-hidden="true" />
+                    {isPending ? (
+                      <>
+                        <Loader2
+                          className="size-4 animate-spin"
+                          aria-hidden="true"
+                        />
+                        Refreshing…
+                      </>
+                    ) : (
+                      "Refresh feed data"
+                    )}
                   </DropdownMenuItem>
                 </>
               ) : null}

@@ -4,6 +4,8 @@
 
 Basado en el estado del proyecto tras v1 (Core + deploy). La v1 cubre las **12 features Core** con calidad de deploy; v2 consiste en completar lo que ya está **a medias**, luego Stretch, y por último lo que exige **decisiones de producto propias**.
 
+**Última revisión:** 23 jun 2026
+
 ---
 
 ## Dónde estás ahora
@@ -13,16 +15,34 @@ Basado en el estado del proyecto tras v1 (Core + deploy). La v1 cubre las **12 f
 | Auth, landing, guest, RSS, listas, read state, reader | ✅ Hecho |
 | Performance (skeletons, lazy images, virtualización) | ✅ Hecho |
 | Deploy Vercel | ✅ Hecho |
-| **Editar/eliminar feeds** | Server actions en `src/actions/feeds.ts`, **sin UI** |
-| **Renombrar/eliminar/reordenar categorías** | Server actions en `src/actions/categories.ts`, **sin UI** |
+| **Editar/eliminar feeds** | ✅ UI en `feed-list-header.tsx` → `edit-feed-dialog.tsx`, `delete-feed-dialog.tsx` (solo en vista `/feed/[id]`) |
+| **Refresh manual por feed** | Server action `refreshFeed` en `feeds.ts`, **sin UI** |
+| **Gestión de categorías** | ✅ UI completa: `edit-categories-dialog.tsx` (reorder drag-and-drop), `rename-category-dialog.tsx`, `delete-category-dialog.tsx`, `add-category-dialog.tsx` |
 | **Búsqueda** | Input en `header-nav.tsx`, **sin backend** |
-| **Bookmarks / Saved** | Tabla `bookmarks` en migración, link a `/saved`, **ruta incompleta** |
+| **Bookmarks / Saved** | Tabla `bookmarks` en migración, link a `/saved`, **ruta placeholder** (`<div>SavedPage</div>`) |
 | **OPML** | Datos de ejemplo en `src/data/`, **sin import/export** |
 | **Refresh automático** | Campos `refresh_interval` en DB, **sin cron** |
+| **Empty state usuario nuevo** | Mensaje genérico en `feed-item-list.tsx` (“No items yet”), **sin CTA dedicado** en dashboard |
 | **Design Challenges** (onboarding, digest, layouts) | ❌ No empezados |
-| **Prod auth** | Faltan env vars de Supabase en Vercel |
+| **Prod auth** | Faltan env vars de Supabase en Vercel (confirmar en tu proyecto) |
 
-**Idea clave:** mucho de v2 no es empezar de cero — es **conectar UI a lógica que ya existe**.
+**Idea clave:** mucho de v2 no es empezar de cero — es **conectar UI a lógica que ya existe**. En categorías ya está hecho; en feeds falta sobre todo **refresh manual**.
+
+---
+
+## Avances recientes (categorías)
+
+Archivos nuevos / conectados en esta fase:
+
+| Archivo | Qué hace |
+|---------|----------|
+| `edit-categories-dialog.tsx` | Lista sortable (`@dnd-kit/react`), abre rename/delete |
+| `rename-category-dialog.tsx` | Renombrar → `renameCategory` |
+| `delete-category-dialog.tsx` | Eliminar → `deleteCategory` + reasignar feeds o uncategorized |
+| `(app)/layout.tsx` | Calcula `feedCountByCategory` y lo pasa al header |
+| `header-nav.tsx` | Menú “Edit categories” abre el dialog |
+
+**Patrón usado:** modales controlados hermanos (no anidados), estado local optimista + `router.refresh()`, drag solo en el grip (`handle` de dnd-kit).
 
 ---
 
@@ -35,26 +55,33 @@ Basado en el estado del proyecto tras v1 (Core + deploy). La v1 cubre las **12 f
 - Añadir en Vercel: `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - Probar en incógnito: signup → dashboard → add feed → read/unread
 - **Criterio de done:** flujo completo sin errores 500
+- **Estado:** ⬜ Pendiente de confirmar en tu deploy
 
 ### 2. UI de gestión de feeds
 
-- **Leer primero:** `src/actions/feeds.ts`, `add-feed-dialog.tsx`, `app-sidebar.tsx`
+- **Leer primero:** `src/actions/feeds.ts`, `add-feed-dialog.tsx`, `feed-list-header.tsx`
 - Añadir: editar título/categoría, eliminar con confirmación, refresh manual por feed
 - Las actions `updateFeed`, `deleteFeed`, `refreshFeed` ya existen
+- **Hecho:** editar y eliminar desde Actions en vista de feed individual
+- **Falta:** botón “Refresh feed” que llame a `refreshFeed`
 - **Criterio de done:** CRUD completo desde la UI, sin llamar actions desde consola
+- **Estado:** 🟡 Parcial (~66 %)
 
 ### 3. UI de gestión de categorías
 
 - **Leer primero:** `src/actions/categories.ts`, `add-category-dialog.tsx`
 - Añadir: renombrar, eliminar (con reasignación de feeds), reordenar
-- `reorderCategories` existe; drag-and-drop es opcional (botones arriba/abajo bastan para v2)
+- `reorderCategories` conectado vía drag-and-drop en `edit-categories-dialog.tsx`
 - **Criterio de done:** sidebar refleja orden y cambios tras `revalidatePath`
+- **Estado:** ✅ Hecho
 
 ### 4. Empty states para usuario nuevo
 
 - Dashboard sin feeds → CTA claro para añadir el primero
 - Preparación para Design Challenge #1, pero aquí basta un estado útil
+- Hoy: `feed-item-list.tsx` muestra “No items yet” + texto, sin botón Add feed
 - **Criterio de done:** usuario recién registrado no ve pantalla vacía sin guía
+- **Estado:** 🟡 Parcial
 
 **IA mínima:** lee los server actions y copia patrones del `add-feed-dialog`. Usa IA solo para detalles de UI si te atascas.
 
@@ -69,7 +96,9 @@ Orden sugerido por dependencias y valor:
 - **DB:** tabla `bookmarks` ya existe en la migración
 - Crear: `src/actions/bookmarks.ts`, ruta `src/app/(app)/saved/page.tsx`
 - Botón bookmark en `feed-item-row.tsx` y `reader-article.tsx`
+- Hoy: `saved/page.tsx` es placeholder
 - **Criterio de done:** guardar, listar, quitar bookmark; sidebar “Saved” funcional
+- **Estado:** ⬜ No empezado
 
 ### 6. Búsqueda (#14)
 
@@ -77,6 +106,7 @@ Orden sugerido por dependencias y valor:
 - Opción simple: `ilike` en título/descripción (suficiente al inicio)
 - Opción avanzada: columna `tsvector` + índice GIN en Supabase
 - **Criterio de done:** búsqueda < 500 ms con 100+ items; resultados navegables
+- **Estado:** ⬜ Solo UI del input
 
 ### 7. OPML import/export (#15)
 
@@ -84,6 +114,7 @@ Orden sugerido por dependencias y valor:
 - Parser OPML (librería o XML manual)
 - UI: importar archivo → crear feeds/categorías; exportar suscripción actual
 - **Criterio de done:** importar el OPML de ejemplo sin errores; export reimportable
+- **Estado:** ⬜ No empezado
 
 ### 8. Refresh automático (#16)
 
@@ -91,6 +122,7 @@ Orden sugerido por dependencias y valor:
 - Vercel Cron → route handler que refresca feeds por usuario o globalmente
 - Respetar `profiles.refresh_interval` y backoff en feeds con error
 - **Criterio de done:** items nuevos aparecen sin refresh manual del usuario
+- **Estado:** ⬜ No empezado
 
 ---
 
@@ -104,9 +136,11 @@ El spec pide **elegir 1 de 3** para un portfolio completo. Hazlo **después** de
 | **Digest / “what did I miss?”** | Vista resumen por tiempo/categoría | Media-alta — nueva ruta + lógica de agrupación |
 | **Layout customization** | `profiles.layout` ya en DB; grid vs lista vs compacto | Alta — mucho CSS y estado |
 
-**Recomendación si quieres poco scope:** onboarding. Ya tienes guest con 19 feeds como referencia de “contenido precargado”.
+**Recomendación si quieres poco scope:** onboarding. Ya tienes guest con 19 feeds como referencia de “contenido precargado”. Encaja bien con cerrar 2A.4 (empty states).
 
 **Criterio de done:** documentar en README la decisión de producto (problema, enfoque, trade-offs).
+
+**Estado:** ⬜ No empezado
 
 ---
 
@@ -137,20 +171,31 @@ Elegir **uno** de `spec/differentiators.md`:
 ## Orden recomendado (resumen)
 
 ```
-2A.1  Env vars Vercel + smoke test auth
-2A.2  UI edit/delete/refresh feeds
-2A.3  UI categorías (rename, delete, reorder)
-2A.4  Empty state usuario nuevo
+2A.1  Env vars Vercel + smoke test auth          ⬜
+2A.2  UI edit/delete/refresh feeds             🟡 falta refresh
+2A.3  UI categorías (rename, delete, reorder)   ✅
+2A.4  Empty state usuario nuevo                🟡
         ↓
-2B.5  Bookmarks (/saved)
-2B.6  Búsqueda
-2B.7  OPML
-2B.8  Cron refresh
+2B.5  Bookmarks (/saved)                       ⬜
+2B.6  Búsqueda                                 ⬜
+2B.7  OPML                                     ⬜
+2B.8  Cron refresh                             ⬜
         ↓
 2C    1 Design Challenge (onboarding recomendado)
         ↓
 2D    Polish + 1 diferenciador
 ```
+
+---
+
+## Siguiente paso sugerido
+
+Cierra **2A.2** con lo mínimo:
+
+1. Añadir “Refresh feed” en el menú Actions de `feed-list-header.tsx` (mismo sitio que Edit/Delete).
+2. Llamar `refreshFeed(feed.id)` + loading + `router.refresh()`.
+
+Luego **2A.4**: empty state en dashboard con botón que abra `AddFeedDialog` (ya existe en el header).
 
 ---
 
@@ -169,13 +214,15 @@ Elegir **uno** de `spec/differentiators.md`:
 
 | Feature | Dónde empezar |
 |---------|---------------|
-| Feed CRUD UI | `src/actions/feeds.ts`, `add-feed-dialog.tsx` |
-| Categorías | `src/actions/categories.ts`, `app-sidebar.tsx` |
-| Bookmarks | migración `bookmarks`, `feed-item-row.tsx` |
+| Feed CRUD UI | `feed-list-header.tsx`, `edit-feed-dialog.tsx`, `delete-feed-dialog.tsx` |
+| Feed refresh UI | `src/actions/feeds.ts` → `refreshFeed`, copiar patrón de delete dialog |
+| Categorías | `edit-categories-dialog.tsx`, `rename-category-dialog.tsx`, `delete-category-dialog.tsx` |
+| Bookmarks | migración `bookmarks`, `feed-item-row.tsx`, `saved/page.tsx` |
 | Búsqueda | `header-nav.tsx`, `src/actions/items.ts` |
 | OPML | `src/data/sample-feeds.opml`, `src/actions/feeds.ts` |
 | Cron | `api/feeds/[id]/refresh`, `vercel.json` con cron |
 | Layouts | `profiles.layout`, `feed-browse-view.tsx` |
+| Empty state | `dashboard/page.tsx` o `feed-item-list.tsx` |
 
 ---
 
@@ -193,7 +240,7 @@ Elegir **uno** de `spec/differentiators.md`:
 
 Si quieres menos scope, esto ya es una v2 sólida para portfolio:
 
-1. **2A completo** (prod auth + CRUD feeds/categorías + empty states)
+1. **2A completo** (prod auth + CRUD feeds/categorías + empty states) — **~75 % hecho**
 2. **Bookmarks**
 3. **Búsqueda**
 4. **1 Design Challenge** (onboarding recomendado)
@@ -205,9 +252,9 @@ Sin cron ni OPML.
 ## Checklist de progreso
 
 - [ ] 2A.1 — Env vars Vercel + smoke test auth
-- [ ] 2A.2 — UI edit/delete/refresh feeds
-- [ ] 2A.3 — UI categorías (rename, delete, reorder)
-- [ ] 2A.4 — Empty state usuario nuevo
+- [x] 2A.2 — UI edit/delete feeds *(falta refresh manual)*
+- [x] 2A.3 — UI categorías (rename, delete, reorder)
+- [ ] 2A.4 — Empty state usuario nuevo *(mensaje básico, sin CTA)*
 - [ ] 2B.5 — Bookmarks (/saved)
 - [ ] 2B.6 — Búsqueda
 - [ ] 2B.7 — OPML import/export
@@ -216,3 +263,15 @@ Sin cron ni OPML.
 - [ ] 2D.9 — Mejoras rendimiento guest (opcional)
 - [ ] 2D.10 — Atajos de teclado (opcional)
 - [ ] 2D.11 — Diferenciador elegido (opcional)
+
+---
+
+## Progreso global 2A
+
+| Item | Estado |
+|------|--------|
+| 2A.1 Prod | ⬜ |
+| 2A.2 Feeds UI | 🟡 |
+| 2A.3 Categorías UI | ✅ |
+| 2A.4 Empty states | 🟡 |
+| **Fase 2A** | **~75 %** |
