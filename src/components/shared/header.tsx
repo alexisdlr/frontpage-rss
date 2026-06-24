@@ -6,14 +6,24 @@ import { CategoryWithMeta } from "@/src/types/actions";
 
 type Props = {
   categories?: CategoryWithMeta[];
+  feedCountByCategory?: Record<string, number>;
 };
 
-export default async function Header({ categories = [] }: Props) {
+export default async function Header({
+  categories = [],
+  feedCountByCategory = {},
+}: Props) {
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
     !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
   ) {
-    return <HeaderNav user={undefined} categories={categories} />;
+    return (
+      <HeaderNav
+        user={undefined}
+        categories={categories}
+        feedCountByCategory={feedCountByCategory}
+      />
+    );
   }
 
   const cookieStore = await cookies();
@@ -22,5 +32,11 @@ export default async function Header({ categories = [] }: Props) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  return <HeaderNav user={user ?? undefined} categories={categories} />;
+  return (
+    <HeaderNav
+      user={user ?? undefined}
+      categories={categories}
+      feedCountByCategory={feedCountByCategory}
+    />
+  );
 }

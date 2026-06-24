@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRightIcon,
+  FolderIcon,
   FolderPlusIcon,
   LogInIcon,
   LogOutIcon,
@@ -31,14 +32,22 @@ import type { CategoryWithMeta } from "@/src/types/actions";
 import { usePathname } from "next/navigation";
 import { cn } from "@/src/lib/utils";
 import { motion } from "framer-motion";
+import EditCategoriesDialog from "../dashboard/categories/edit-categories-dialog";
 
 type Props = {
   user: User | undefined;
   categories: CategoryWithMeta[];
+  feedCountByCategory?: Record<string, number>;
 };
 
-const HeaderNav = ({ user, categories }: Props) => {
+const HeaderNav = ({
+  user,
+  categories,
+  feedCountByCategory = {},
+}: Props) => {
   const [feedDialogOpen, setFeedDialogOpen] = useState(false);
+  const [editCategoriesDialogOpen, setEditCategoriesDialogOpen] =
+    useState(false);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const pathname = usePathname();
   const isDashboard =
@@ -134,6 +143,13 @@ const HeaderNav = ({ user, categories }: Props) => {
                       <FolderPlusIcon className="size-4" />
                       Add category
                     </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer transition-all duration-300"
+                      onSelect={() => setEditCategoriesDialogOpen(true)}
+                    >
+                      <FolderIcon className="size-4" />
+                      Edit categories
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Button variant="outline" onClick={handleSignOut}>
@@ -184,6 +200,12 @@ const HeaderNav = ({ user, categories }: Props) => {
             open={categoryDialogOpen}
             onOpenChange={setCategoryDialogOpen}
             showTrigger={false}
+          />
+          <EditCategoriesDialog
+            categories={categories}
+            feedCountByCategory={feedCountByCategory}
+            open={editCategoriesDialogOpen}
+            onOpenChange={setEditCategoriesDialogOpen}
           />
         </>
       ) : null}

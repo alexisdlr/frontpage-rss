@@ -21,9 +21,16 @@ export default async function AppLayout({
     ? unreadResult.data
     : { total: 0, uncategorized: 0, byFeed: {}, byCategory: {} };
 
+  const feedCountByCategory: Record<string, number> = {};
+  for (const feed of feeds) {
+    if (!feed.category_id) continue;
+    feedCountByCategory[feed.category_id] =
+      (feedCountByCategory[feed.category_id] ?? 0) + 1;
+  }
+
   return (
     <>
-      <Header categories={categories} />
+      <Header categories={categories} feedCountByCategory={feedCountByCategory} />
       <AppShellClient
         categories={categories}
         feeds={feeds}

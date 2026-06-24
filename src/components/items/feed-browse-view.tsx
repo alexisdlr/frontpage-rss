@@ -26,6 +26,7 @@ export async function FeedBrowseView({
   unreadCount,
   totalCount,
   items,
+
   nextCursor,
   hasMore,
 }: FeedBrowseViewProps) {
