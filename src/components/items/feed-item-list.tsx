@@ -1,15 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Filter, Loader2 } from "lucide-react";
 
 import { getFeedItems } from "@/src/actions/items";
 import { FeedItemRow } from "@/src/components/items/feed-item-row";
 import { FeedListEmptyState } from "@/src/components/items/feed-list-empty-state";
-import {
-  FeedItemSkeleton,
-  LoadMoreSkeleton,
-} from "@/src/components/items/skeletons";
+import { LoadMoreSkeleton } from "@/src/components/items/skeletons";
 import { VirtualizedItemList } from "@/src/components/items/virtualized-item-list";
 import { Button } from "@/src/components/ui/button";
 import { cn } from "@/src/lib/utils";
@@ -49,7 +46,6 @@ export function FeedItemList({
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [readFilter, setReadFilter] = useState<ReadFilter>("all");
   const [feedFilter, setFeedFilter] = useState<string>("all");
-  const [isPending, startTransition] = useTransition();
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -99,12 +95,6 @@ export function FeedItemList({
   });
 
   const unreadInList = items.filter((item) => !item.isRead).length;
-
-  function handleFilterChange(next: ReadFilter) {
-    startTransition(() => {
-      setReadFilter(next);
-    });
-  }
 
   if (items.length === 0) {
     if (categories && scope.type === "all" && !highlightQuery) {
@@ -173,7 +163,7 @@ export function FeedItemList({
                   readFilter === value && "bg-accent-subtle text-accent",
                 )}
                 aria-pressed={readFilter === value}
-                onClick={() => handleFilterChange(value)}
+                onClick={() => setReadFilter(value)}
               >
                 {value}
               </Button>
@@ -181,8 +171,6 @@ export function FeedItemList({
           </div>
         </div>
       </div>
-
-      {isPending ? <FeedItemSkeleton count={5} /> : null}
 
       {filteredItems.length === 0 ? (
         <div className="rounded-lg border border-border bg-surface px-6 py-10 text-center">
@@ -217,7 +205,7 @@ export function FeedItemList({
       )}
 
       <div ref={sentinelRef} className="flex justify-center py-4">
-        {isLoadingMore ? (
+        {isLoadingMore && hasMore ? (
           <div className="w-full space-y-4">
             <LoadMoreSkeleton count={3} />
             <span className="flex justify-center">

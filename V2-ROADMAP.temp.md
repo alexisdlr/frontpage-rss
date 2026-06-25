@@ -4,7 +4,7 @@
 
 Basado en el estado del proyecto tras v1 (Core + deploy). La v1 cubre las **12 features Core** con calidad de deploy; v2 consiste en completar lo que ya está **a medias**, luego Stretch, y por último lo que exige **decisiones de producto propias**.
 
-**Última revisión:** 24 jun 2026
+**Última revisión:** 24 jun 2026 — **Fase 2A cerrada** (2A.1 prod confirmado)
 
 ---
 
@@ -24,9 +24,9 @@ Basado en el estado del proyecto tras v1 (Core + deploy). La v1 cubre las **12 f
 | **OPML** | Datos de ejemplo en `src/data/`, **sin import/export** |
 | **Refresh automático** | Campos `refresh_interval` en DB, **sin cron** |
 | **Design Challenges** (onboarding, digest, layouts) | ❌ No empezados |
-| **Prod auth** | Faltan env vars de Supabase en Vercel (confirmar en tu proyecto) |
+| **Prod auth** | ✅ Env vars Supabase en Vercel + smoke test en incógnito |
 
-**Idea clave:** la fase 2A está casi cerrada (solo falta confirmar prod). El stretch más avanzado es **búsqueda**. El siguiente bloque natural es **bookmarks**.
+**Idea clave:** **Fase 2A cerrada.** Siguiente bloque: **2B.5 Bookmarks**, luego Design Challenge u OPML según prioridad.
 
 ---
 
@@ -61,7 +61,7 @@ Archivos nuevos / conectados en esta fase:
 - Añadir en Vercel: `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - Probar en incógnito: signup → dashboard → add feed → read/unread → búsqueda
 - **Criterio de done:** flujo completo sin errores 500
-- **Estado:** ⬜ Pendiente de confirmar en tu deploy
+- **Estado:** ✅ Hecho (env vars en Vercel + smoke test incógnito)
 
 ### 2. UI de gestión de feeds
 
@@ -83,7 +83,7 @@ Archivos nuevos / conectados en esta fase:
 - **Criterio de done:** usuario recién registrado no ve pantalla vacía sin guía
 - **Estado:** ✅ Hecho
 
-**Progreso 2A:** ~**90 %** (solo falta 2A.1 prod)
+**Progreso 2A:** ✅ **100 % — fase cerrada**
 
 ---
 
@@ -154,11 +154,11 @@ Orden sugerido por dependencias y valor:
 ## Orden recomendado (resumen)
 
 ```
-2A.1  Env vars Vercel + smoke test auth          ⬜
+2A.1  Env vars Vercel + smoke test auth          ✅
 2A.2  UI edit/delete/refresh feeds               ✅
 2A.3  UI categorías (rename, delete, reorder)    ✅
 2A.4  Empty state usuario nuevo                  ✅
-        ↓
+        ↓  ← 2A completa
 2B.5  Bookmarks (/saved)                         ⬜  ← siguiente
 2B.6  Búsqueda                                   ✅
 2B.7  OPML                                       ⬜
@@ -173,9 +173,9 @@ Orden sugerido por dependencias y valor:
 
 ## Siguiente paso sugerido
 
-1. **2A.1** — Smoke test en producción (incógnito): auth + dashboard + búsqueda + reader.
-2. **2B.5 Bookmarks** — `src/actions/bookmarks.ts` + `saved/page.tsx` + botón en `feed-item-row` (copiar patrón de búsqueda).
-3. Documentar en README al cerrar 2A + búsqueda.
+1. **2B.5 Bookmarks** — `src/actions/bookmarks.ts` + `saved/page.tsx` + botón en `feed-item-row` y `reader-article.tsx` (copiar patrón de búsqueda).
+2. Documentar en README: cierre de **Fase 2A** + búsqueda.
+3. **2C** — Elegir Design Challenge (onboarding recomendado) cuando bookmarks esté listo.
 
 ---
 
@@ -218,7 +218,7 @@ Orden sugerido por dependencias y valor:
 
 Si quieres menos scope, esto ya es una v2 sólida para portfolio:
 
-1. **2A completo** — ~**90 %** (falta prod auth)
+1. **2A completo** — ✅
 2. **Bookmarks** — pendiente
 3. **Búsqueda** — ✅ hecho
 4. **1 Design Challenge** (onboarding recomendado)
@@ -229,7 +229,7 @@ Sin cron ni OPML.
 
 ## Checklist de progreso
 
-- [ ] 2A.1 — Env vars Vercel + smoke test auth
+- [x] 2A.1 — Env vars Vercel + smoke test auth
 - [x] 2A.2 — UI edit/delete/refresh feeds
 - [x] 2A.3 — UI categorías (rename, delete, reorder)
 - [x] 2A.4 — Empty state usuario nuevo con CTA Add feed
@@ -249,14 +249,14 @@ Sin cron ni OPML.
 
 | Fase | Estado |
 |------|--------|
-| **2A Core** | **~90 %** (falta 2A.1 prod) |
+| **2A Core** | ✅ **100 % — cerrada** |
 | **2B Stretch** | **~25 %** (búsqueda ✅; bookmarks, OPML, cron ⬜) |
 | **2C Design Challenge** | 0 % |
 | **2D Polish** | Sidebar colapsable ✅; resto opcional |
 
 | Item | Estado |
 |------|--------|
-| 2A.1 Prod | ⬜ |
+| 2A.1 Prod | ✅ |
 | 2A.2 Feeds UI | ✅ |
 | 2A.3 Categorías UI | ✅ |
 | 2A.4 Empty states | ✅ |

@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useRef, type ReactNode } from "react";
 
@@ -7,10 +8,21 @@ import { useRef, type ReactNode } from "react";
 export const VIRTUALIZE_THRESHOLD = 50;
 const ESTIMATED_ROW_HEIGHT = 96;
 
+const rowTransition = {
+  duration: 0.22,
+  ease: [0.4, 0, 0.2, 1] as const,
+};
+
+const rowVariants = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+};
+
 type VirtualizedItemListProps<T> = {
   items: T[];
   getItemKey: (item: T) => string;
-  renderItem: (item: T) => ReactNode;
+  renderItem: (item: T, index: number) => ReactNode;
 };
 
 export function VirtualizedItemList<T>({
@@ -36,10 +48,26 @@ export function VirtualizedItemList<T>({
         ref={listRef}
         className="rounded-lg border border-border bg-surface shadow-sm"
       >
-        <ul className="divide-y divide-border-subtle">
-          {items.map((item) => (
-            <li key={getItemKey(item)}>{renderItem(item)}</li>
-          ))}
+        <ul>
+          <AnimatePresence mode="popLayout">
+            {items.map((item, index) => (
+              <motion.li
+                key={getItemKey(item)}
+                layout
+                variants={rowVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{
+                  ...rowTransition,
+                  delay: Math.min(index * 0.03, 0.24),
+                }}
+                className="overflow-hidden border-b border-border-subtle last:border-b-0"
+              >
+                {renderItem(item, index)}
+              </motion.li>
+            ))}
+          </AnimatePresence>
         </ul>
       </div>
     );
@@ -68,7 +96,7 @@ export function VirtualizedItemList<T>({
                 transform: `translateY(${virtualRow.start}px)`,
               }}
             >
-              {renderItem(item)}
+              {renderItem(item, virtualRow.index)}
             </li>
           );
         })}

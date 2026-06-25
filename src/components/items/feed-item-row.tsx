@@ -26,7 +26,11 @@ type FeedItemRowProps = {
   highlightQuery?: string;
 };
 
-export function FeedItemRow({ item, scope, highlightQuery }: FeedItemRowProps) {
+export function FeedItemRow({
+  item,
+  scope,
+  highlightQuery,
+}: FeedItemRowProps) {
   const router = useRouter();
   const feedTitle = getFeedDisplayTitle(item.feed);
   const excerpt = getItemExcerpt(item);
@@ -56,7 +60,7 @@ export function FeedItemRow({ item, scope, highlightQuery }: FeedItemRowProps) {
   return (
     <article
       className={cn(
-        "group relative flex gap-3 border-b border-border-subtle px-1 py-4 transition-colors hover:bg-bg-tertiary/60",
+        "group relative flex gap-3 px-1 py-4 transition-colors hover:bg-bg-tertiary/60",
         item.isRead && "opacity-70",
       )}
     >

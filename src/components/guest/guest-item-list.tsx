@@ -272,7 +272,9 @@ export function GuestItemList({
         <VirtualizedItemList
           items={filteredItems}
           getItemKey={(item) => item.id}
-          renderItem={(item) => <GuestItemRow item={item} scope={scope} />}
+          renderItem={(item) => (
+            <GuestItemRow item={item} scope={scope} />
+          )}
         />
       )}
 
