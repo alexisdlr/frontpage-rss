@@ -3,6 +3,7 @@ import type { Database } from "@/src/types/database";
 export type DbFeed = Database["public"]["Tables"]["feeds"]["Row"];
 export type DbCategory = Database["public"]["Tables"]["categories"]["Row"];
 export type DbFeedItem = Database["public"]["Tables"]["feed_items"]["Row"];
+export type DbBookmark = Database["public"]["Tables"]["bookmarks"]["Row"];
 
 export type ActionError = {
   ok: false;
@@ -48,8 +49,11 @@ export type FeedItemWithMeta = {
   fetchedAt: string;
   isRead: boolean;
   readAt: string | null;
+  isBookmarked: boolean;
   feed: FeedItemSource;
 };
+
+export type BookmarkedItemWithMeta = FeedItemWithMeta;
 
 export type FeedWithMeta = DbFeed & {
   unreadCount: number;

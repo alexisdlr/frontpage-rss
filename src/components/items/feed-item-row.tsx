@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CheckCheck, Circle, ExternalLink } from "lucide-react";
+import {
+  Bookmark,
+  BookmarkCheck,
+  CheckCheck,
+  Circle,
+  ExternalLink,
+} from "lucide-react";
 
 import { FeedFavicon } from "@/src/components/items/feed-favicon";
 import { Button } from "@/src/components/ui/button";
@@ -19,6 +25,7 @@ import { cn } from "@/src/lib/utils";
 import { markItemRead, setItemReadState } from "@/src/actions/read-state";
 
 import type { FeedItemWithMeta, ItemListScope } from "@/src/types/actions";
+import { toggleBookmarkItem } from "@/src/actions/bookmarks";
 
 type FeedItemRowProps = {
   item: FeedItemWithMeta;
@@ -26,11 +33,7 @@ type FeedItemRowProps = {
   highlightQuery?: string;
 };
 
-export function FeedItemRow({
-  item,
-  scope,
-  highlightQuery,
-}: FeedItemRowProps) {
+export function FeedItemRow({ item, scope, highlightQuery }: FeedItemRowProps) {
   const router = useRouter();
   const feedTitle = getFeedDisplayTitle(item.feed);
   const excerpt = getItemExcerpt(item);
@@ -55,6 +58,15 @@ export function FeedItemRow({
     event.stopPropagation();
     await setItemReadState(item.id, !item.isRead);
     router.refresh();
+  }
+
+  async function toggleBookmark(event: React.MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    const result = await toggleBookmarkItem(item.id, !item.isBookmarked);
+    if (result.ok) {
+      router.refresh();
+    }
   }
 
   return (
@@ -134,6 +146,7 @@ export function FeedItemRow({
           type="button"
           variant="ghost"
           size="icon-sm"
+          className="cursor-pointer"
           onClick={toggleRead}
           aria-label={item.isRead ? "Mark as unread" : "Mark as read"}
           title={item.isRead ? "Mark as unread" : "Mark as read"}
@@ -156,6 +169,25 @@ export function FeedItemRow({
             </Link>
           </Button>
         ) : null}
+
+        <Button
+          variant="ghost"
+          onClick={toggleBookmark}
+          size="icon-sm"
+          className="cursor-pointer"
+          aria-label={
+            item.isBookmarked ? "Remove from bookmarks" : "Add to bookmarks"
+          }
+          title={
+            item.isBookmarked ? "Remove from bookmarks" : "Add to bookmarks"
+          }
+        >
+          {item.isBookmarked ? (
+            <BookmarkCheck className="size-4" />
+          ) : (
+            <Bookmark className="size-4" />
+          )}
+        </Button>
       </div>
     </article>
   );

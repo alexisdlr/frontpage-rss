@@ -12,6 +12,7 @@ import { Button } from "@/src/components/ui/button";
 import { cn } from "@/src/lib/utils";
 
 import type {
+  BookmarkedItemWithMeta,
   CategoryWithMeta,
   FeedItemWithMeta,
   ItemCursor,
@@ -196,7 +197,7 @@ export function FeedItemList({
           getItemKey={(item) => item.id}
           renderItem={(item) => (
             <FeedItemRow
-              item={item}
+              item={item as BookmarkedItemWithMeta}
               scope={scope}
               highlightQuery={highlightQuery}
             />

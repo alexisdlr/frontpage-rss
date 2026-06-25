@@ -45,12 +45,17 @@ export function isValidHttpUrl(value: string): boolean {
 export const DEFAULT_PAGE_SIZE = 30;
 
 export function mapFeedItemRow(
-  row: DbFeedItemRow,
+  row: DbFeedItemQueryRow,
 ): import("@/src/types/actions").FeedItemWithMeta {
   const feed = Array.isArray(row.feeds) ? row.feeds[0] : row.feeds;
   const state = Array.isArray(row.user_item_states)
     ? row.user_item_states[0]
     : row.user_item_states;
+  const bookmarks = Array.isArray(row.bookmarks)
+    ? row.bookmarks
+    : row.bookmarks
+      ? [row.bookmarks]
+      : [];
 
   return {
     id: row.id,
@@ -65,6 +70,7 @@ export function mapFeedItemRow(
     fetchedAt: row.fetched_at,
     isRead: state?.is_read ?? false,
     readAt: state?.read_at ?? null,
+    isBookmarked: bookmarks.length > 0,
     feed: {
       id: feed?.id ?? row.feed_id,
       customTitle: feed?.custom_title ?? null,
@@ -76,7 +82,8 @@ export function mapFeedItemRow(
   };
 }
 
-type DbFeedItemRow = {
+/** Shape of a feed_items row returned by FEED_ITEM_SELECT (with nested joins). */
+export type DbFeedItemQueryRow = {
   id: string;
   feed_id: string;
   guid: string;
@@ -109,6 +116,7 @@ type DbFeedItemRow = {
     | { is_read: boolean; read_at: string | null }
     | { is_read: boolean; read_at: string | null }[]
     | null;
+  bookmarks?: { id: string } | { id: string }[] | null;
 };
 
 export const FEED_ITEM_SELECT = `
@@ -133,5 +141,8 @@ export const FEED_ITEM_SELECT = `
   user_item_states (
     is_read,
     read_at
+  ),
+  bookmarks (
+    id
   )
 `;

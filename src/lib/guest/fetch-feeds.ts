@@ -35,6 +35,7 @@ function mapParsedItem(
     fetchedAt,
     isRead: false,
     readAt: null,
+    isBookmarked: false,
     feed: {
       id: feedId,
       customTitle: feed.title,

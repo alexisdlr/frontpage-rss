@@ -56,7 +56,17 @@ export function LoadMoreSkeleton({ count = 3 }: { count?: number }) {
 
 export function ReaderSkeleton() {
   return (
-    <article className="mx-auto max-w-content animate-pulse space-y-6 px-4 py-8">
+    <article className="mx-auto max-w-content mt-16 animate-pulse space-y-6 px-4 py-8">
+      <div className="h-8 w-3/4 rounded bg-bg-tertiary" />
+      <div className="h-4 w-1/2 rounded bg-bg-tertiary" />
+      <div className="space-y-3 pt-4">
+        {Array.from({ length: 8 }).map((_, index) => (
+          <div
+            key={index}
+            className={`h-4 rounded bg-bg-tertiary ${index % 3 === 2 ? "w-5/6" : "w-full"}`}
+          />
+        ))}
+      </div>
       <div className="h-8 w-3/4 rounded bg-bg-tertiary" />
       <div className="h-4 w-1/2 rounded bg-bg-tertiary" />
       <div className="space-y-3 pt-4">

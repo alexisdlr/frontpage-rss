@@ -5,6 +5,7 @@ import { FeedFavicon } from "@/src/components/items/feed-favicon";
 import { Button } from "@/src/components/ui/button";
 import { formatFullDate, getFeedDisplayTitle } from "@/src/lib/format";
 import { buildReaderHref } from "@/src/lib/scope";
+import { BookmarkButton } from "@/src/components/reader/bookmark-button";
 import { sanitizeArticleHtml } from "@/src/lib/sanitize";
 
 import type { FeedItemWithMeta, ItemListScope } from "@/src/types/actions";
@@ -55,13 +56,18 @@ export function ReaderArticle({
           {item.title?.trim() || "Untitled"}
         </h1>
 
-        <div className="mt-4">
-          <Button variant="outline" size="sm" asChild>
-            <a href={item.url} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="size-4" aria-hidden="true" />
-              View original
-            </a>
-          </Button>
+        <div className="flex gap-2 items-center">
+          <div className="mt-4">
+            <Button variant="outline" size="sm" asChild>
+              <a href={item.url} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="size-4" aria-hidden="true" />
+                View original
+              </a>
+            </Button>
+          </div>
+          <div className="mt-4">
+            <BookmarkButton item={item} />
+          </div>
         </div>
       </header>
 
