@@ -165,7 +165,7 @@ export function AddFeedDialog({
           <Button
             type="button"
             variant="outline"
-            className="min-h-11 w-full justify-start gap-2"
+            className="min-h-9 w-fit cursor-pointer justify-start gap-2"
           >
             <Plus className="size-4" aria-hidden="true" />
             Add feed

@@ -102,16 +102,63 @@
     );
   }
 
-  .hero-gradient::after {
+  /* Soft section transitions (same technique as hero-gradient bottom fade) */
+  .section-fade {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .section-fade-bottom::after,
+  .section-fade-top::before {
     content: "";
     position: absolute;
     inset-inline: 0;
-    bottom: 0;
     height: var(--section-fade-height);
-    background-color: var(--color-surface);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .section-fade-bottom::after {
+    bottom: 0;
+    background-color: var(--section-fade-to, var(--color-surface));
     mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
-    pointer-events: none;
+  }
+
+  .section-fade-top::before {
+    top: 0;
+    background-color: var(--section-fade-from, var(--color-bg-primary));
+    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  }
+
+  .section-fade__inner {
+    position: relative;
+    z-index: 2;
+  }
+
+  .section-fade-to-surface {
+    --section-fade-to: var(--color-surface);
+  }
+
+  .section-fade-to-tertiary {
+    --section-fade-to: var(--color-bg-tertiary);
+  }
+
+  .section-fade-to-secondary {
+    --section-fade-to: var(--color-bg-secondary);
+  }
+
+  .section-fade-from-primary {
+    --section-fade-from: var(--color-bg-primary);
+  }
+
+  .section-fade-from-surface {
+    --section-fade-from: var(--color-surface);
+  }
+
+  .section-fade-from-tertiary {
+    --section-fade-from: var(--color-bg-tertiary);
   }
 
   .btn-marketing {
@@ -239,7 +286,6 @@
     min-height: 2.75rem;
     align-items: center;
     justify-content: center;
-    margin-top: var(--space-8);
     border-radius: var(--radius-md);
     background-color: var(--color-accent);
     padding: 0.625rem 1.25rem;
@@ -251,5 +297,8 @@
 
   .cta-banner__button:hover {
     background-color: var(--color-accent-hover);
+  }
+  button {
+    cursor: pointer;
   }
 }

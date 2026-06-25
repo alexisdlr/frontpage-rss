@@ -1,10 +1,16 @@
 import { getFeedItems, getFeedItemCounts } from "@/src/actions/items";
+import { shouldShowOnboarding } from "@/src/actions/onboarding";
 import { getUnreadCounts } from "@/src/actions/read-state";
 import { FeedBrowseView } from "@/src/components/items/feed-browse-view";
 import { FeedItemListSkeleton } from "@/src/components/items/skeletons";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 async function DashboardContent() {
+  if (await shouldShowOnboarding()) {
+    redirect("/onboarding");
+  }
+
   const scope = { type: "all" as const };
 
   const [itemsResult, countsResult, unreadResult] = await Promise.all([

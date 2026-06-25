@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 const Hero = () => {
   return (
     <motion.section
-      className="h-dvh hero-gradient"
+      className="section-fade section-fade-bottom section-fade-to-surface h-dvh hero-gradient"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}

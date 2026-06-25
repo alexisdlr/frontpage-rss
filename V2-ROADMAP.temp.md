@@ -4,7 +4,7 @@
 
 Basado en el estado del proyecto tras v1 (Core + deploy). La v1 cubre las **12 features Core** con calidad de deploy; v2 consiste en completar lo que ya está **a medias**, luego Stretch, y por último lo que exige **decisiones de producto propias**.
 
-**Última revisión:** 24 jun 2026 — **2B.5 Bookmarks ✅** (pendiente smoke test prod)
+**Última revisión:** 24 jun 2026 — **2C Onboarding en progreso** (página `/onboarding`, import por categorías)
 
 ---
 
@@ -24,10 +24,25 @@ Basado en el estado del proyecto tras v1 (Core + deploy). La v1 cubre las **12 f
 | **Animación filas de feed** | ✅ `virtualized-item-list.tsx` + `AnimatePresence` (listas &lt; 50 items) |
 | **OPML** | Datos de ejemplo en `src/data/`, **sin import/export** |
 | **Refresh automático** | Campos `refresh_interval` en DB, **sin cron** |
-| **Design Challenges** (onboarding, digest, layouts) | ❌ No empezados |
+| **Design Challenges** (onboarding, digest, layouts) | 🟡 Onboarding: `/onboarding`, `importStarterFeeds`, redirect dashboard |
 | **Prod auth** | ✅ Env vars Supabase en Vercel + smoke test en incógnito |
 
 **Idea clave:** **2B.5 Bookmarks cerrado.** Siguiente: **2C onboarding** (Design Challenge) → OPML/cron después.
+
+---
+
+## Avances recientes (onboarding 2C)
+
+| Archivo | Qué hace |
+|---------|----------|
+| `src/actions/onboarding.ts` | `getStarterCategories`, `importStarterFeeds`, `skipOnboarding`, cookie skip, redirect lógica |
+| `src/app/(onboarding)/onboarding/page.tsx` | Página dedicada sin sidebar |
+| `src/app/(onboarding)/layout.tsx` | Layout minimal (logo + contenido centrado) |
+| `src/components/onboarding/onboarding-form.tsx` | Checkboxes por categoría, select all, import con loading |
+| `src/app/(app)/dashboard/page.tsx` | Redirect a `/onboarding` si 0 feeds y no skip |
+| `src/components/items/feed-list-empty-state.tsx` | CTA “Browse starter feeds” |
+
+**Pendiente:** smoke test prod (signup → onboarding → dashboard con items).
 
 ---
 
@@ -146,7 +161,7 @@ Orden sugerido por dependencias y valor:
 
 **Recomendación:** onboarding (guest con 19 feeds como referencia).
 
-**Estado:** ⬜ No empezado
+**Estado:** 🟡 **En progreso** — página dedicada + categorías de `sample-feeds.json`
 
 ---
 
@@ -184,7 +199,7 @@ Orden sugerido por dependencias y valor:
 2B.7  OPML                                       ⬜  ← después de 2C
 2B.8  Cron refresh                               ⬜
         ↓
-2C    Onboarding / content discovery             ⬜  ← **siguiente (elegido)**
+2C    Onboarding / content discovery             🟡  ← en progreso
         ↓
 2D    Polish + 1 diferenciador
 ```
@@ -193,9 +208,48 @@ Orden sugerido por dependencias y valor:
 
 ## Siguiente paso sugerido
 
-1. **Smoke test prod** — guardar desde reader y lista → `/saved` → quitar.
-2. **2B.7 OPML** o **2C onboarding** (ruta mínima portfolio: saltar OPML/cron).
-3. Documentar en README al validar bookmarks en prod.
+1. **2C Onboarding** — flujo primer uso con feeds sugeridos (ver plan abajo).
+2. Smoke test prod de bookmarks (opcional, rápido).
+3. **2B.7 OPML** y **2B.8 cron** cuando cierres 2C.
+4. Documentar en README al cerrar 2C.
+
+### Plan 2C — Onboarding / content discovery
+
+**Referencia:** guest ya usa los 19 feeds de `src/data/sample-feeds.json` — reutilízalos para usuarios autenticados.
+
+**Decisiones de producto (definir antes de codear):**
+
+| Pregunta | Opción recomendada |
+|----------|-------------------|
+| ¿Cuándo se muestra? | Usuario con **0 feeds** en dashboard (amplía `feed-list-empty-state`) |
+| ¿Dónde vive la UI? | Página `/onboarding` o modal/stepper sobre el empty state |
+| ¿Qué ofreces? | Elegir categorías (Frontend, Design…) → añadir pack de feeds |
+| ¿Cómo se persisten? | Server action `importStarterFeeds(categoryIds)` que llama lógica de `addFeed` |
+
+**Criterios de done (5):**
+
+1. Usuario nuevo sin feeds ve onboarding claro (no solo “Add feed”).
+2. Puede elegir al menos una categoría de feeds sugeridos.
+3. Tras confirmar, feeds + categorías aparecen en sidebar y dashboard con artículos.
+4. Puede saltar y añadir feed manual (`AddFeedDialog` sigue disponible).
+5. No vuelve a ver onboarding si ya tiene feeds.
+
+**Archivos donde empezar:**
+
+| Paso | Archivo |
+|------|---------|
+| Datos | `src/data/sample-feeds.json`, `src/lib/guest/sample-data.ts` (reutilizar loader) |
+| Action | `src/actions/onboarding.ts` o extender `feeds.ts` — bulk add por categoría |
+| UI | `feed-list-empty-state.tsx` → enriquecer, o `src/app/(app)/onboarding/page.tsx` |
+| Detección | `feed-item-list.tsx` / `dashboard/page.tsx` — `items.length === 0` + sin feeds en DB |
+
+**Orden de implementación (1 sesión = 1 paso):**
+
+1. Action: importar N feeds desde `sample-feeds.json` (crear categorías si no existen).
+2. UI: pantalla de bienvenida + checkboxes por categoría.
+3. Conectar empty state del dashboard al flujo.
+4. Estado “completado” implícito (tiene feeds) o flag en `profiles` si quieres “skip forever”.
+5. Pulir copy + responsive + probar signup → onboarding → dashboard con items.
 
 ---
 
@@ -258,7 +312,7 @@ Sin cron ni OPML.
 - [x] 2B.6 — Búsqueda
 - [ ] 2B.7 — OPML import/export
 - [ ] 2B.8 — Cron refresh automático
-- [ ] 2C — Design Challenge elegido
+- [ ] 2C — Design Challenge: onboarding (~80 %: falta smoke test prod)
 - [ ] 2D.9 — Mejoras rendimiento guest (opcional)
 - [ ] 2D.10 — Atajos de teclado (opcional)
 - [ ] 2D.11 — Diferenciador elegido (opcional)
