@@ -11,7 +11,6 @@ import {
   LogOutIcon,
   PlusIcon,
   RssIcon,
-  SearchIcon,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -26,7 +25,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
-import { Input } from "@/src/components/ui/input";
 
 import type { CategoryWithMeta } from "@/src/types/actions";
 import { usePathname } from "next/navigation";

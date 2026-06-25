@@ -3,8 +3,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { Input } from "../ui/input";
-import { ArrowRightIcon, SearchIcon } from "lucide-react";
+
+import { ArrowRightIcon } from "lucide-react";
 
 const HeaderAuth = () => {
   return (

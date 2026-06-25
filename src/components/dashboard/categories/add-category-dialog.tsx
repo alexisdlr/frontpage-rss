@@ -4,17 +4,9 @@ import { Loader2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { addFeed, validateFeedUrl } from "@/src/actions/feeds";
-import { FeedFavicon } from "@/src/components/items/feed-favicon";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { Button } from "@/src/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
+
 import {
   Dialog,
   DialogContent,
@@ -26,13 +18,7 @@ import {
 } from "@/src/components/ui/dialog";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/src/components/ui/select";
+
 import { createCategory } from "@/src/actions/categories";
 
 type AddCategoryDialogProps = {

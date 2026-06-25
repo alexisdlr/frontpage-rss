@@ -14,7 +14,7 @@ const VerifyEmailContent = () => {
         Verify your email
       </h1>
       <p className="mt-2 text-sm text-text-secondary">
-        We've sent you an email to verify your email address.
+        We have sent you an email to verify your email address.
       </p>
     </motion.div>
   );
