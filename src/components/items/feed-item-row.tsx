@@ -6,7 +6,9 @@ import { CheckCheck, Circle, ExternalLink } from "lucide-react";
 
 import { FeedFavicon } from "@/src/components/items/feed-favicon";
 import { Button } from "@/src/components/ui/button";
+import { HighlightText } from "@/src/components/shared/highlight-text";
 import {
+  formatFullDate,
   formatPublishedDate,
   getFeedDisplayTitle,
   getItemExcerpt,
@@ -21,9 +23,10 @@ import type { FeedItemWithMeta, ItemListScope } from "@/src/types/actions";
 type FeedItemRowProps = {
   item: FeedItemWithMeta;
   scope: ItemListScope;
+  highlightQuery?: string;
 };
 
-export function FeedItemRow({ item, scope }: FeedItemRowProps) {
+export function FeedItemRow({ item, scope, highlightQuery }: FeedItemRowProps) {
   const router = useRouter();
   const feedTitle = getFeedDisplayTitle(item.feed);
   const excerpt = getItemExcerpt(item);
@@ -33,7 +36,6 @@ export function FeedItemRow({ item, scope }: FeedItemRowProps) {
   async function handleOpen() {
     if (!item.isRead) {
       await markItemRead(item.id);
-      router.refresh();
     }
 
     if (useReader) {
@@ -88,6 +90,7 @@ export function FeedItemRow({ item, scope }: FeedItemRowProps) {
           <time
             className="text-xs text-text-tertiary"
             dateTime={item.publishedAt ?? undefined}
+            title={formatFullDate(item.publishedAt)}
           >
             {formatPublishedDate(item.publishedAt)}
           </time>
@@ -109,12 +112,15 @@ export function FeedItemRow({ item, scope }: FeedItemRowProps) {
             !item.isRead ? "font-semibold" : "font-medium",
           )}
         >
-          {item.title?.trim() || "Untitled"}
+          <HighlightText
+            text={item.title?.trim() || "Untitled"}
+            query={highlightQuery}
+          />
         </h2>
 
         {excerpt ? (
           <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-text-secondary">
-            {excerpt}
+            <HighlightText text={excerpt} query={highlightQuery} />
           </p>
         ) : null}
       </button>

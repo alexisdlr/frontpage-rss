@@ -21,14 +21,13 @@ async function ReaderContent({
 }) {
   const scope = parseItemListScope(searchParams);
 
-  const [itemResult, adjacentResult] = await Promise.all([
-    getFeedItem(itemId),
-    getAdjacentFeedItems(itemId, scope),
-  ]);
+  const itemResult = await getFeedItem(itemId);
 
   if (!itemResult.ok) {
     notFound();
   }
+
+  const adjacentResult = await getAdjacentFeedItems(itemId, scope);
 
   const adjacent = adjacentResult.ok
     ? adjacentResult.data

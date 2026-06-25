@@ -284,7 +284,7 @@ export async function getFeedItemCounts(input?: {
 }
 export async function searchFeedItems(
   query: string,
-  limit: number = 10,
+  limit: number = DEFAULT_PAGE_SIZE,
 ): Promise<ActionResult<FeedItemWithMeta[]>> {
   const auth = await getAuthenticatedClient();
   if (!auth.ok) return auth;

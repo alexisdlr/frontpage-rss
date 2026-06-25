@@ -18,6 +18,7 @@ type FeedBrowseViewProps = {
   items: FeedItemWithMeta[];
   nextCursor: ItemCursor | null;
   hasMore: boolean;
+  highlightQuery?: string;
 };
 
 export async function FeedBrowseView({
@@ -29,6 +30,7 @@ export async function FeedBrowseView({
 
   nextCursor,
   hasMore,
+  highlightQuery,
 }: FeedBrowseViewProps) {
   const feedsInScope = Array.from(
     new Map(
@@ -69,6 +71,8 @@ export async function FeedBrowseView({
         initialHasMore={hasMore}
         totalCount={totalCount}
         feedsInScope={feedsInScope}
+        highlightQuery={highlightQuery}
+        categories={scope.type === "all" ? categories.data : undefined}
       />
     </>
   );

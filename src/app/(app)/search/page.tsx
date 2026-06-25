@@ -1,14 +1,33 @@
 import { searchFeedItems } from "@/src/actions/items";
 import { FeedBrowseView } from "@/src/components/items/feed-browse-view";
+import { FeedItemListSkeleton } from "@/src/components/items/skeletons";
+import Link from "next/link";
+import { Suspense } from "react";
 
-type SeachPageProps = {
-  searchParams: Promise<{ q: string }>;
+type SearchPageProps = {
+  searchParams: Promise<{ q?: string }>;
 };
 
-const SeachPage = async ({ searchParams }: SeachPageProps) => {
+async function SearchContent({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   const { q } = await searchParams;
+  const term = q?.trim() ?? "";
 
-  const result = await searchFeedItems(q || "");
+  if (!term) {
+    return (
+      <div className="rounded-lg border border-border md:mt-16 bg-surface px-6 py-10 text-center">
+        <h1 className="text-xl font-semibold text-text-primary">Search</h1>
+        <p className="mt-2 text-sm text-text-secondary md:text-base">
+          Use the search bar to find articles across your feeds.
+        </p>
+      </div>
+    );
+  }
+
+  const result = await searchFeedItems(term);
 
   if (!result.ok) {
     return (
@@ -17,22 +36,46 @@ const SeachPage = async ({ searchParams }: SeachPageProps) => {
       </div>
     );
   }
+
   const items = result.data;
-  const totalCount = items.length;
-  const nextCursor = null;
-  const hasMore = false;
+
+  if (items.length === 0) {
+    return (
+      <div className="rounded-lg border border-border md:mt-16 bg-surface px-6 py-10 text-center">
+        <h1 className="text-xl font-semibold text-text-primary">
+          No results for &quot;{term}&quot;
+        </h1>
+        <p className="mt-2 text-sm text-text-secondary md:text-base">
+          Check your spelling or try a different search term.
+        </p>
+        <Link
+          href="/dashboard"
+          className="mt-4 inline-block text-sm underline text-text-secondary md:text-base hover:text-text-primary"
+        >
+          Go to dashboard
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <FeedBrowseView
       scope={{ type: "all" }}
-      title={`Search results for "${q}"`}
+      title={`Search results for "${term}"`}
       unreadCount={0}
-      totalCount={totalCount}
+      totalCount={items.length}
       items={items}
-      nextCursor={nextCursor}
-      hasMore={hasMore}
+      nextCursor={null}
+      hasMore={false}
+      highlightQuery={term}
     />
   );
-};
+}
 
-export default SeachPage;
+export default function SearchPage({ searchParams }: SearchPageProps) {
+  return (
+    <Suspense fallback={<FeedItemListSkeleton />}>
+      <SearchContent searchParams={searchParams} />
+    </Suspense>
+  );
+}

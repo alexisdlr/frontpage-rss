@@ -12,7 +12,7 @@ import {
 
 import type { ActionResult, UnreadCounts } from "@/src/types/actions";
 
-const APP_PATHS = ["/dashboard", "/category", "/feed", "/reader"];
+const APP_PATHS = ["/dashboard", "/category", "/feed", "/reader", "/search"];
 
 function revalidateAppPaths() {
   for (const path of APP_PATHS) {

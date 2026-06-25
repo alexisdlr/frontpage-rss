@@ -5,6 +5,7 @@ import { Filter, Loader2 } from "lucide-react";
 
 import { getFeedItems } from "@/src/actions/items";
 import { FeedItemRow } from "@/src/components/items/feed-item-row";
+import { FeedListEmptyState } from "@/src/components/items/feed-list-empty-state";
 import {
   FeedItemSkeleton,
   LoadMoreSkeleton,
@@ -14,6 +15,7 @@ import { Button } from "@/src/components/ui/button";
 import { cn } from "@/src/lib/utils";
 
 import type {
+  CategoryWithMeta,
   FeedItemWithMeta,
   ItemCursor,
   ItemListScope,
@@ -28,6 +30,8 @@ type FeedItemListProps = {
   initialHasMore: boolean;
   totalCount: number;
   feedsInScope?: Array<{ id: string; title: string }>;
+  highlightQuery?: string;
+  categories?: CategoryWithMeta[];
 };
 
 export function FeedItemList({
@@ -37,6 +41,8 @@ export function FeedItemList({
   initialHasMore,
   totalCount,
   feedsInScope = [],
+  highlightQuery,
+  categories,
 }: FeedItemListProps) {
   const [items, setItems] = useState(initialItems);
   const [cursor, setCursor] = useState(initialCursor);
@@ -101,6 +107,10 @@ export function FeedItemList({
   }
 
   if (items.length === 0) {
+    if (categories && scope.type === "all" && !highlightQuery) {
+      return <FeedListEmptyState categories={categories} />;
+    }
+
     return (
       <div className="rounded-lg border border-dashed border-border bg-surface px-6 py-12 text-center">
         <p className="text-lg font-medium text-text-primary">No items yet</p>
@@ -196,7 +206,13 @@ export function FeedItemList({
         <VirtualizedItemList
           items={filteredItems}
           getItemKey={(item) => item.id}
-          renderItem={(item) => <FeedItemRow item={item} scope={scope} />}
+          renderItem={(item) => (
+            <FeedItemRow
+              item={item}
+              scope={scope}
+              highlightQuery={highlightQuery}
+            />
+          )}
         />
       )}
 
