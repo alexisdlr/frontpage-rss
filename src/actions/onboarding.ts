@@ -44,7 +44,6 @@ export async function getStarterCategories(): Promise<
   if (!auth.ok) return auth;
 
   const document = await loadSampleFeedsDocument();
-
   return {
     ok: true,
     data: document.categories.map((category) => ({

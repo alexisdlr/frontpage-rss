@@ -1,7 +1,9 @@
 import { getCategories } from "@/src/actions/categories";
 import { getFeeds } from "@/src/actions/feeds";
+import { getUserLayoutOrDefault } from "@/src/actions/preferences";
 import { getUnreadCounts } from "@/src/actions/read-state";
 import { AppShellClient } from "@/src/components/dashboard/app-shell/app-shell-client";
+import { LayoutProvider } from "@/src/components/layout/layout-provider";
 import Header from "@/src/components/shared/header";
 
 export default async function AppLayout({
@@ -9,11 +11,13 @@ export default async function AppLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [categoriesResult, feedsResult, unreadResult] = await Promise.all([
-    getCategories(),
-    getFeeds(),
-    getUnreadCounts(),
-  ]);
+  const [categoriesResult, feedsResult, unreadResult, initialLayout] =
+    await Promise.all([
+      getCategories(),
+      getFeeds(),
+      getUnreadCounts(),
+      getUserLayoutOrDefault(),
+    ]);
 
   const categories = categoriesResult.ok ? categoriesResult.data : [];
   const feeds = feedsResult.ok ? feedsResult.data : [];
@@ -31,14 +35,16 @@ export default async function AppLayout({
   return (
     <>
       <Header categories={categories} feedCountByCategory={feedCountByCategory} />
-      <AppShellClient
-        categories={categories}
-        feeds={feeds}
-        totalUnread={unread.total}
-        uncategorizedUnread={unread.uncategorized}
-      >
-        {children}
-      </AppShellClient>
+      <LayoutProvider initialLayout={initialLayout}>
+        <AppShellClient
+          categories={categories}
+          feeds={feeds}
+          totalUnread={unread.total}
+          uncategorizedUnread={unread.uncategorized}
+        >
+          {children}
+        </AppShellClient>
+      </LayoutProvider>
     </>
   );
 }

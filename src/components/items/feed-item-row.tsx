@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Bookmark,
   BookmarkCheck,
@@ -11,80 +10,66 @@ import {
 } from "lucide-react";
 
 import { FeedFavicon } from "@/src/components/items/feed-favicon";
-import { Button } from "@/src/components/ui/button";
+import { useFeedItemActions } from "@/src/components/items/use-feed-item-actions";
 import { HighlightText } from "@/src/components/shared/highlight-text";
+import { Button } from "@/src/components/ui/button";
 import {
   formatFullDate,
   formatPublishedDate,
-  getFeedDisplayTitle,
-  getItemExcerpt,
 } from "@/src/lib/format";
-import { buildReaderHref } from "@/src/lib/scope";
-import { hasReaderContent } from "@/src/lib/sanitize";
+import type { FeedLayout } from "@/src/lib/layout";
 import { cn } from "@/src/lib/utils";
-import { markItemRead, setItemReadState } from "@/src/actions/read-state";
 
 import type { FeedItemWithMeta, ItemListScope } from "@/src/types/actions";
-import { toggleBookmarkItem } from "@/src/actions/bookmarks";
 
 type FeedItemRowProps = {
   item: FeedItemWithMeta;
   scope: ItemListScope;
   highlightQuery?: string;
+  layout?: FeedLayout;
 };
 
-export function FeedItemRow({ item, scope, highlightQuery }: FeedItemRowProps) {
-  const router = useRouter();
-  const feedTitle = getFeedDisplayTitle(item.feed);
-  const excerpt = getItemExcerpt(item);
-  const useReader = hasReaderContent(item.contentHtml);
-  const readerHref = buildReaderHref(item.id, scope);
+export function FeedItemRow({
+  item,
+  scope,
+  highlightQuery,
+  layout = "standard",
+}: FeedItemRowProps) {
+  const {
+    feedTitle,
+    excerpt,
+    useReader,
+    readerHref,
+    handleOpen,
+    toggleRead,
+    toggleBookmark,
+  } = useFeedItemActions(item, scope);
 
-  async function handleOpen() {
-    if (!item.isRead) {
-      await markItemRead(item.id);
-    }
-
-    if (useReader) {
-      router.push(readerHref);
-      return;
-    }
-
-    window.open(item.url, "_blank", "noopener,noreferrer");
-  }
-
-  async function toggleRead(event: React.MouseEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    await setItemReadState(item.id, !item.isRead);
-    router.refresh();
-  }
-
-  async function toggleBookmark(event: React.MouseEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    const result = await toggleBookmarkItem(item.id, !item.isBookmarked);
-    if (result.ok) {
-      router.refresh();
-    }
-  }
+  const isCompact = layout === "compact";
 
   return (
     <article
       className={cn(
-        "group relative flex gap-3 px-1 py-4 transition-colors hover:bg-bg-tertiary/60",
+        "group relative flex gap-3 px-1 transition-colors hover:bg-bg-tertiary/60",
+        isCompact ? "py-2" : "py-4",
         item.isRead && "opacity-70",
       )}
     >
       <div className="flex shrink-0 items-start pt-1">
         {!item.isRead ? (
           <span
-            className="mt-1.5 size-2 rounded-full bg-unread"
+            className={cn(
+              "rounded-full bg-unread",
+              isCompact ? "mt-1 size-1.5" : "mt-1.5 size-2",
+            )}
             aria-label="Unread"
           />
         ) : (
           <span
-            className="mt-1.5 size-2 rounded-full bg-transparent"
+            className={cn(
+              "rounded-full bg-transparent",
+              isCompact ? "mt-1 size-1.5" : "mt-1.5 size-2",
+            )}
             aria-hidden="true"
           />
         )}
@@ -96,35 +81,48 @@ export function FeedItemRow({ item, scope, highlightQuery }: FeedItemRowProps) {
         className="min-w-0 flex-1 text-left focus-visible:outline-none"
       >
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <FeedFavicon url={item.feed.faviconUrl} title={feedTitle} />
-          <span className="text-xs font-medium text-text-secondary">
+          {!isCompact ? (
+            <FeedFavicon url={item.feed.faviconUrl} title={feedTitle} />
+          ) : null}
+          <span
+            className={cn(
+              "font-medium text-text-secondary",
+              isCompact ? "text-[11px]" : "text-xs",
+            )}
+          >
             {feedTitle}
           </span>
           <span className="text-xs text-text-tertiary" aria-hidden="true">
             ·
           </span>
           <time
-            className="text-xs text-text-tertiary"
+            className={cn(
+              "text-text-tertiary",
+              isCompact ? "text-[11px]" : "text-xs",
+            )}
             dateTime={item.publishedAt ?? undefined}
             title={formatFullDate(item.publishedAt)}
           >
             {formatPublishedDate(item.publishedAt)}
           </time>
-          {useReader ? (
+          {!isCompact && useReader ? (
             <span className="rounded-sm bg-accent-subtle px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-accent">
               Reader
             </span>
-          ) : (
+          ) : !isCompact ? (
             <ExternalLink
               className="size-3 text-text-tertiary opacity-0 transition-opacity group-hover:opacity-100"
               aria-hidden="true"
             />
-          )}
+          ) : null}
         </div>
 
         <h2
           className={cn(
-            "mt-1 text-base leading-snug text-text-primary",
+            "leading-snug text-text-primary",
+            isCompact
+              ? "mt-0.5 text-sm"
+              : "mt-1 text-base leading-snug",
             !item.isRead ? "font-semibold" : "font-medium",
           )}
         >
@@ -134,7 +132,7 @@ export function FeedItemRow({ item, scope, highlightQuery }: FeedItemRowProps) {
           />
         </h2>
 
-        {excerpt ? (
+        {!isCompact && excerpt ? (
           <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-text-secondary">
             <HighlightText text={excerpt} query={highlightQuery} />
           </p>

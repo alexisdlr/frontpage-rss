@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,6 +16,33 @@ import { cn } from "@/src/lib/utils";
 
 type OnboardingFormProps = {
   categories: StarterCategory[];
+};
+
+const formTransition = {
+  duration: 0.35,
+  ease: [0.4, 0, 0.2, 1] as const,
+};
+
+const listVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.06, delayChildren: 0.12 },
+  },
+};
+
+const categoryVariants = {
+  hidden: { opacity: 0, y: 14 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.28, ease: [0.4, 0, 0.2, 1] as const },
+  },
+};
+
+const categorySpring = {
+  type: "spring" as const,
+  stiffness: 420,
+  damping: 28,
 };
 
 export function OnboardingForm({ categories }: OnboardingFormProps) {
@@ -79,8 +107,18 @@ export function OnboardingForm({ categories }: OnboardingFormProps) {
   }
 
   return (
-    <div className="rounded-lg border border-border bg-surface p-6 shadow-sm sm:p-8">
-      <div className="text-center">
+    <motion.div
+      className="rounded-lg border border-border bg-surface p-6 shadow-sm sm:p-8"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={formTransition}
+    >
+      <motion.div
+        className="text-center"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ ...formTransition, delay: 0.05 }}
+      >
         <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">
           Welcome to Frontpage
         </h1>
@@ -88,9 +126,14 @@ export function OnboardingForm({ categories }: OnboardingFormProps) {
           Pick the topics you care about and we&apos;ll add curated RSS feeds so
           your dashboard isn&apos;t empty on day one.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-2">
+      <motion.div
+        className="mt-6 flex flex-wrap items-center justify-between gap-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.15, duration: 0.25 }}
+      >
         <p className="text-sm text-text-secondary">
           {selectedCount} {selectedCount === 1 ? "category" : "categories"} ·{" "}
           {feedCount} {feedCount === 1 ? "feed" : "feeds"}
@@ -103,19 +146,32 @@ export function OnboardingForm({ categories }: OnboardingFormProps) {
             Clear
           </Button>
         </div>
-      </div>
+      </motion.div>
 
-      <ul className="mt-4 grid gap-3 sm:grid-cols-2" role="list">
+      <motion.ul
+        className="mt-4 grid gap-3 sm:grid-cols-2"
+        role="list"
+        variants={listVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {categories.map((category) => {
           const isSelected = selected.has(category.name);
 
           return (
-            <li key={category.name}>
-              <label
+            <motion.li key={category.name} variants={categoryVariants} layout>
+              <motion.label
+                layout
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                transition={categorySpring}
+                animate={{
+                  scale: isSelected ? 1.01 : 1,
+                }}
                 className={cn(
                   "flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors",
                   isSelected
-                    ? "border-accent bg-accent-subtle/40"
+                    ? "border-accent bg-accent-subtle/40 shadow-sm"
                     : "border-border bg-bg-primary hover:bg-bg-tertiary/50",
                 )}
               >
@@ -134,26 +190,51 @@ export function OnboardingForm({ categories }: OnboardingFormProps) {
                     {category.feedCount === 1 ? "feed" : "feeds"}
                   </span>
                 </span>
-              </label>
-            </li>
+              </motion.label>
+            </motion.li>
           );
         })}
-      </ul>
+      </motion.ul>
 
-      {error ? (
-        <Alert variant="destructive" className="mt-4">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      ) : null}
+      <AnimatePresence mode="wait">
+        {error ? (
+          <motion.div
+            key="onboarding-error"
+            initial={{ opacity: 0, y: -6, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: "auto" }}
+            exit={{ opacity: 0, y: -6, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <Alert variant="destructive" className="mt-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
-      {isImporting ? (
-        <p className="mt-4 text-center text-sm text-text-secondary">
-          Adding feeds… this can take up to a minute while we fetch each
-          subscription.
-        </p>
-      ) : null}
+      <AnimatePresence>
+        {isImporting ? (
+          <motion.p
+            key="importing-message"
+            className="mt-4 text-center text-sm text-text-secondary"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.2 }}
+          >
+            Adding feeds… this can take up to a minute while we fetch each
+            subscription.
+          </motion.p>
+        ) : null}
+      </AnimatePresence>
 
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <motion.div
+        className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35, duration: 0.3 }}
+      >
         <Button
           type="button"
           size="lg"
@@ -186,11 +267,16 @@ export function OnboardingForm({ categories }: OnboardingFormProps) {
             "Skip for now"
           )}
         </Button>
-      </div>
+      </motion.div>
 
-      <p className="mt-4 text-center text-xs text-text-tertiary">
+      <motion.p
+        className="mt-4 text-center text-xs text-text-tertiary"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.45, duration: 0.25 }}
+      >
         Prefer to paste your own URLs? Skip and use Add feed on the dashboard.
-      </p>
-    </div>
+      </motion.p>
+    </motion.div>
   );
 }

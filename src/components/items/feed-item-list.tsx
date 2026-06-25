@@ -4,7 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Filter, Loader2 } from "lucide-react";
 
 import { getFeedItems } from "@/src/actions/items";
+import { FeedItemCardGrid } from "@/src/components/items/feed-item-card-grid";
 import { FeedItemRow } from "@/src/components/items/feed-item-row";
+import { LayoutSwitcher } from "@/src/components/layout/layout-switcher";
+import { useFeedLayout } from "@/src/components/layout/layout-provider";
 import { FeedListEmptyState } from "@/src/components/items/feed-list-empty-state";
 import { LoadMoreSkeleton } from "@/src/components/items/skeletons";
 import { VirtualizedItemList } from "@/src/components/items/virtualized-item-list";
@@ -42,6 +45,7 @@ export function FeedItemList({
   highlightQuery,
   categories,
 }: FeedItemListProps) {
+  const { layout } = useFeedLayout();
   const [items, setItems] = useState(initialItems);
   const [cursor, setCursor] = useState(initialCursor);
   const [hasMore, setHasMore] = useState(initialHasMore);
@@ -126,6 +130,8 @@ export function FeedItemList({
         </p>
 
         <div className="flex flex-wrap items-center gap-2">
+          <LayoutSwitcher />
+
           {feedsInScope.length > 1 ? (
             <label className="flex items-center gap-2 text-sm text-text-secondary">
               <Filter
@@ -191,15 +197,23 @@ export function FeedItemList({
             Clear filters
           </Button>
         </div>
+      ) : layout === "cards" ? (
+        <FeedItemCardGrid
+          items={filteredItems as BookmarkedItemWithMeta[]}
+          scope={scope}
+          highlightQuery={highlightQuery}
+        />
       ) : (
         <VirtualizedItemList
           items={filteredItems}
+          layout={layout}
           getItemKey={(item) => item.id}
           renderItem={(item) => (
             <FeedItemRow
               item={item as BookmarkedItemWithMeta}
               scope={scope}
               highlightQuery={highlightQuery}
+              layout={layout}
             />
           )}
         />

@@ -1,122 +1,148 @@
 # Frontpage — RSS Feed Reader
 
-A customizable content aggregator that pulls RSS and Atom feeds into one calm reading dashboard. Built as a [Frontend Mentor Product Challenge](https://www.frontendmentor.io).
+A customizable RSS/Atom aggregator with a calm reading dashboard. Built as a [Frontend Mentor Product Challenge](https://www.frontendmentor.io).
 
-**Live URL:** https://frontpage-feed-reader-main-rho.vercel.app
-
-**Guest experience (submit this URL):** https://frontpage-feed-reader-main-rho.vercel.app/guest
-
-![Screenshot of the solution](./public/images/screenshot.png)
-
----
-
-## Overview
-
-Frontpage lets you subscribe to RSS/Atom feeds, organize them by category, browse articles in a scannable list, and read full content in-app when available. Authenticated users persist feeds and read state in Supabase; guests get a fully populated demo with 19 curated feeds and session-based read tracking.
-
-### Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 15 (App Router) |
-| Database | Supabase (PostgreSQL + RLS) |
-| Authentication | Supabase Auth |
-| Hosting | Vercel |
-| Styling | Tailwind CSS v4 + design tokens |
-| RSS parsing | `rss-parser` with custom normalization |
-| List virtualization | `@tanstack/react-virtual` |
+| | URL |
+|---|-----|
+| **Live site** | https://frontpage-feed-reader-main-rho.vercel.app |
+| **Guest demo** *(submit this for instant access)* | https://frontpage-feed-reader-main-rho.vercel.app/guest |
 
 ---
 
-## Design Decisions
+## For reviewers
 
-### Dashboard layout
+You can evaluate the full UX **without creating an account** via guest mode. Sign up only if you want to test persistence, onboarding, search, and saved articles.
 
-Dense, Linear-inspired list view with a sticky category sidebar on desktop and a slide-over nav on mobile. Unread indicators use a small accent dot and bold titles rather than heavy badges, keeping scan speed high.
+### Path A — Guest demo (~2 min, no signup)
 
-### Reader view
+1. Open **[`/guest`](https://frontpage-feed-reader-main-rho.vercel.app/guest)** — 19 live RSS feeds across 5 categories.
+2. Click a **category** in the sidebar (desktop) or open the menu (mobile).
+3. **Mark items read/unread** — state persists in `localStorage` for the session.
+4. Open an article — in-app **reader** when `content_html` is available; otherwise opens the source site.
+5. Visit **[`/`](https://frontpage-feed-reader-main-rho.vercel.app)** for the marketing landing (hero, features, how it works, footer).
 
-Articles with sufficient `content_html` open in a serif reader (Georgia) on a calm background; sanitized HTML with lazy-loaded images. Otherwise, items open the original source in a new tab.
+### Path B — Authenticated flow (~5 min)
 
-### Guest experience
+1. **[Sign up](https://frontpage-feed-reader-main-rho.vercel.app/signup)** with email + password.
+2. **Onboarding** — pick starter categories (Frontend, Design, etc.) or skip to add feeds manually.
+3. **Dashboard** — filter by category, infinite scroll, unread indicators. Use the **layout switcher** (Compact / Standard / Cards) above the feed list.
+4. **Search** — header search or [`/search?q=react`](https://frontpage-feed-reader-main-rho.vercel.app/search?q=react); matches title + description with highlights.
+5. **Saved** — bookmark from a list row or inside the reader → [`/saved`](https://frontpage-feed-reader-main-rho.vercel.app/saved).
+6. **Feed management** — add/remove/refresh feeds; rename, reorder, or delete categories (sidebar ⋮ menus).
 
-Guests land on `/guest` with live-fetched content from 19 sample feeds across five categories. Read state lives in `localStorage` so the demo feels real without an account. A persistent banner encourages sign-up to save subscriptions.
+### Requirements coverage
+
+| Spec area | Feature | Status | Try it |
+|-----------|---------|--------|--------|
+| **Core** | Auth (sign up, login, email verify) | ✅ | `/signup`, `/login` |
+| **Core** | Subscribe to RSS/Atom feeds | ✅ | Onboarding or “Add feed” dialog |
+| **Core** | Organize feeds by category | ✅ | Sidebar + category management |
+| **Core** | Article list with read/unread | ✅ | `/dashboard`, `/category/[id]` |
+| **Core** | In-app reader | ✅ | Click any item with full HTML content |
+| **Core** | Responsive layout | ✅ | Resize viewport; mobile drawer nav |
+| **Stretch** | Search across library | ✅ | `/search?q=…` |
+| **Stretch** | Bookmarks / Saved | ✅ | Bookmark icon → `/saved` |
+| **Stretch** | OPML import/export | ❌ | Not implemented |
+| **Design Challenge** | Onboarding / content discovery | ✅ | New account → `/onboarding` |
+| **Design Challenge** | Digest view | ❌ | Deferred |
+| **Design Challenge** | Layout customization | ✅ | Layout switcher on dashboard, category, feed, search, and saved views |
+
+---
+
+## Screenshots
 
 ### Landing page
 
-Mobile-first hero with dual CTAs (sign up + try as guest). Marketing screenshot uses `next/image` with lazy loading and responsive `sizes` to avoid blocking LCP on smaller viewports.
+Marketing hero, feature grid, how-it-works steps, and footer. Scroll reveals use Intersection Observer + Framer Motion.
+
+![Landing page hero and product preview](./public/images/product-hero.png)
+
+### Onboarding
+
+First-time users with no feeds land here. Select curated starter packs by category, import in one step, or skip to manual setup.
+
+![Onboarding — choose starter feed categories](./public/images/onboarding.png)
+
+### Dashboard
+
+Dense list view with category sidebar, unread dots, and feed management. Sidebar collapses to icons on desktop.
+
+![Authenticated dashboard with category sidebar and article list](./public/images/screenshot.png)
+
+> Guest dashboard (`/guest`) uses the same list/sidebar patterns with live-fetched sample feeds instead of Supabase data.
+
+---
+
+## Design decisions
+
+**Dashboard** — Linear-inspired density: sticky sidebar, bold unread titles, small accent dots. List rows animate on filter changes when &lt; 50 items (`AnimatePresence` + `motion.li` as direct children).
+
+**Reader** — Serif body (Georgia) on a calm background; HTML sanitized with lazy images. Bookmark control in the reader toolbar.
+
+**Onboarding** — Dedicated route group without the app shell. Imports from `sample-feeds.json` via `addFeed` (max 4 concurrent). Skip sets a cookie so users aren’t redirected again.
+
+**Layout customization** — Three global feed layouts (Compact / Standard / Cards) via a toolbar switcher. Preference stored in `profiles.layout` + `localStorage`. Cards show cover images from feed HTML when available; favicon gradient fallback otherwise. Global setting keeps the model simple; per-category layouts deferred.
+
+**Guest mode** — Server-fetched live RSS (5‑min cache) so reviewers see real articles, not static placeholders. Read state in `localStorage`.
+
+**Landing** — Section backgrounds blend with `mask-image` fades (same technique as the hero gradient). Product screenshot uses `next/image` with responsive `sizes`.
+
+---
+
+## Tech stack
+
+Next.js 15 (App Router) · Supabase (Postgres + Auth + RLS) · Vercel · Tailwind CSS v4 · Framer Motion · `rss-parser` · `@tanstack/react-virtual`
 
 ---
 
 ## Performance
 
-| Technique | Implementation |
-|-----------|----------------|
-| Skeleton screens | Route-level Suspense, guest hydration, filter transitions, load-more rows |
-| Lazy images | Favicons (`loading="lazy"`), reader HTML images via sanitizer, marketing screenshot |
-| Virtualized lists | `@tanstack/react-virtual` when 50+ items are loaded; dynamic row measurement |
-| Pagination | Cursor-based server pagination (30 items/page) + infinite scroll |
-| Guest caching | 5-minute in-memory cache for parallel RSS fetches |
-| Images | AVIF/WebP via `next.config.ts` |
+| Technique | Where |
+|-----------|--------|
+| Route-level Suspense + skeletons | Dashboard, guest hydration, load-more |
+| Virtualized lists | 50+ items (`@tanstack/react-virtual`) |
+| Cursor pagination | 30 items/page + infinite scroll |
+| Lazy images | Favicons, reader HTML, marketing assets |
+| Guest RSS cache | 5-minute in-memory TTL |
+| Image formats | AVIF/WebP via `next.config.ts` |
+
+### Lighthouse (production, mobile)
+
+| Page | Perf | A11y | Best | SEO |
+|------|------|------|------|-----|
+| `/` | **98** | **94** | **100** | **100** |
+| `/guest` | **97** | **79**\* | **96** | **73** |
+
+\*Guest a11y is lower because live RSS aggregation slows the SSR audit window — intentional trade-off for an authentic demo.
 
 ---
 
-## Lighthouse Scores
+## Known limitations
 
-Measured on the production deployment (mobile, Lighthouse 11.7).
-
-### Landing page (`/`)
-
-| Category | Score | Target |
-|----------|-------|--------|
-| Performance | **98** | >85 |
-| Accessibility | **94** | >90 |
-| Best Practices | **100** | >90 |
-| SEO | **100** | — |
-
-### Guest dashboard (`/guest`)
-
-| Category | Score | Notes |
-|----------|-------|-------|
-| Performance | **97** | Server-rendered live RSS fetch on first load |
-| Accessibility | **79** | Slow SSR window during feed aggregation affects audit timing |
-| Best Practices | **96** | |
-| SEO | **73** | Dynamic content page; lower SEO weight by design |
-
-Guest mode intentionally fetches live feeds server-side so reviewers see real content. That adds cold-start latency but keeps the demo authentic.
+- OPML import/export not built
+- No background cron for feed refresh (manual refresh per feed)
+- Search uses `ilike` (sufficient for personal libraries)
+- List exit animations disabled when virtualized (50+ items)
+- Digest view not started
+- Card layout does not virtualize long lists (use Compact for 100+ items)
+- Optional polish: keyboard shortcuts, dark mode, PWA
 
 ---
 
-## Known Limitations
-
-- Search UI is present but not wired to a backend (Stretch feature)
-- Bookmarks / Saved section not implemented (Stretch feature)
-- OPML import/export not implemented (Stretch feature)
-- Design Challenge features (onboarding flow, digest view, layout customization) deferred to v2
-- Supabase env vars must be configured on Vercel for authenticated features
-
----
-
-## Running Locally
+## Run locally
 
 ```bash
 git clone https://github.com/alexisdlr/frontpage-rss.git
 cd frontpage-rss
-
 pnpm install
-
-cp .env.example .env.local
-# Fill in Supabase credentials
-
+cp .env.example .env.local   # Supabase URL + publishable key
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Guest mode works without Supabase; auth and dashboard require env vars.
-
-### Environment Variables
+Open [http://localhost:3000](http://localhost:3000). **Guest mode works without env vars.** Auth, dashboard, search, saved, and onboarding need Supabase credentials.
 
 | Variable | Description |
-|----------|------------|
+|----------|-------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase anon/publishable key |
 

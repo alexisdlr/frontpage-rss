@@ -4,9 +4,15 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useRef, type ReactNode } from "react";
 
+import type { FeedLayout } from "@/src/lib/layout";
+
 /** Virtualize once enough rows are loaded to affect scroll performance. */
 export const VIRTUALIZE_THRESHOLD = 50;
-const ESTIMATED_ROW_HEIGHT = 96;
+const ESTIMATED_ROW_HEIGHT: Record<FeedLayout, number> = {
+  compact: 56,
+  standard: 96,
+  cards: 96,
+};
 
 const rowTransition = {
   duration: 0.22,
@@ -21,12 +27,14 @@ const rowVariants = {
 
 type VirtualizedItemListProps<T> = {
   items: T[];
+  layout?: FeedLayout;
   getItemKey: (item: T) => string;
   renderItem: (item: T, index: number) => ReactNode;
 };
 
 export function VirtualizedItemList<T>({
   items,
+  layout = "standard",
   getItemKey,
   renderItem,
 }: VirtualizedItemListProps<T>) {
@@ -37,7 +45,7 @@ export function VirtualizedItemList<T>({
     count: items.length,
     getScrollElement: () =>
       listRef.current?.closest("main") ?? document.getElementById("app-main"),
-    estimateSize: () => ESTIMATED_ROW_HEIGHT,
+    estimateSize: () => ESTIMATED_ROW_HEIGHT[layout],
     overscan: 8,
     enabled: shouldVirtualize,
   });

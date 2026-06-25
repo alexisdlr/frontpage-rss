@@ -23,7 +23,6 @@ export default async function OnboardingPage() {
       </div>
     );
   }
-
   return (
     <div className="w-full max-w-2xl">
       <OnboardingForm categories={categoriesResult.data} />
