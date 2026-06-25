@@ -28,7 +28,7 @@ export function ReaderArticle({
     : null;
 
   return (
-    <article className="mx-auto max-w-content">
+    <article className="mx-auto max-w-content md:mt-16">
       <header className="border-b border-border pb-6">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <Button variant="ghost" size="sm" asChild>

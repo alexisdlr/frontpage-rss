@@ -282,3 +282,56 @@ export async function getFeedItemCounts(input?: {
 
   return { ok: true, data: { total: count ?? 0 } };
 }
+export async function searchFeedItems(
+  query: string,
+  limit: number = 10,
+): Promise<ActionResult<FeedItemWithMeta[]>> {
+  const auth = await getAuthenticatedClient();
+  if (!auth.ok) return auth;
+
+  const { supabase, user } = auth;
+
+  if (!query.trim()) {
+    return {
+      ok: true,
+      data: [] as FeedItemWithMeta[],
+    };
+  }
+  const term = query.toLowerCase().trim();
+
+  const { data: ownedFeeds, error: feedsError } = await supabase
+    .from("feeds")
+    .select("id")
+    .eq("user_id", user.id);
+
+  if (feedsError) {
+    return { ok: false, error: feedsError.message };
+  }
+
+  const ownedFeedIds = (ownedFeeds ?? []).map((feed) => feed.id);
+  if (ownedFeedIds.length === 0) {
+    return {
+      ok: true,
+      data: [] as FeedItemWithMeta[],
+    };
+  }
+
+  let searchQuery = supabase
+    .from("feed_items")
+    .select(FEED_ITEM_SELECT)
+    .order("published_at", { ascending: false, nullsFirst: false })
+    .order("id", { ascending: false })
+    .or(`title.ilike.%${term}%,description.ilike.%${term}%`)
+
+    .limit(limit);
+
+  searchQuery = searchQuery.in("feed_id", ownedFeedIds);
+
+  const { data: feedItems, error } = await searchQuery;
+
+  if (error) {
+    return { ok: false, error: error.message };
+  }
+
+  return { ok: true, data: feedItems.map(mapFeedItemRow) };
+}

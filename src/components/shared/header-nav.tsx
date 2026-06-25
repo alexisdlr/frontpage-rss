@@ -33,6 +33,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/src/lib/utils";
 import { motion } from "framer-motion";
 import EditCategoriesDialog from "../dashboard/categories/edit-categories-dialog";
+import SearchFeedsInput from "./search-feeds";
 
 type Props = {
   user: User | undefined;
@@ -40,11 +41,7 @@ type Props = {
   feedCountByCategory?: Record<string, number>;
 };
 
-const HeaderNav = ({
-  user,
-  categories,
-  feedCountByCategory = {},
-}: Props) => {
+const HeaderNav = ({ user, categories, feedCountByCategory = {} }: Props) => {
   const [feedDialogOpen, setFeedDialogOpen] = useState(false);
   const [editCategoriesDialogOpen, setEditCategoriesDialogOpen] =
     useState(false);
@@ -53,8 +50,10 @@ const HeaderNav = ({
   const isDashboard =
     pathname === "/dashboard" ||
     pathname === "/saved" ||
+    pathname === "/search" ||
     pathname.includes("/category") ||
-    pathname.includes("/feed");
+    pathname.includes("/feed") ||
+    pathname.includes("/reader");
   const isMarketing = pathname === "/";
   const isGuestMode = pathname === "/guest";
   const handleSignOut = async () => {
@@ -108,14 +107,7 @@ const HeaderNav = ({
           <div className="flex items-center gap-3">
             {user && isDashboard ? (
               <>
-                <div className="relative w-64">
-                  <Input
-                    type="text"
-                    placeholder="Search articles..."
-                    className="pl-8"
-                  />
-                  <SearchIcon className="size-4 absolute left-2 top-1/2 -translate-y-1/2 text-text-secondary" />
-                </div>
+                <SearchFeedsInput />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
